@@ -5,7 +5,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 
 # Set environment variable so app listens on port 80 and 443
-ENV ASPNETCORE_URLS="http://+:80;https://+:443"
+ENV ASPNETCORE_URLS="http://+:80"
 
 # Expose port 80 and 443
 EXPOSE 80
