@@ -32,7 +32,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Use Https Redirection only if configured
+if (builder.Configuration["ASPNETCORE_URLS"]?.Contains("https") == true)
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthorization();
 
