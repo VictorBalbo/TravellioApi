@@ -4,14 +4,14 @@ namespace Travellio.Models;
 
 public class Place
 {
-    public required Guid Id { get; set; }
+    public required string Id { get; set; }
     public required string Name { get; set; }
     public required Coordinates Coordinates { get; set; }
     public string? Address { get; set; }
     public string? Description { get; set; }
     public IEnumerable<string>? Categories { get; set; }
     public string? Vicinity { get; set; }
-    public int? Rating { get; set; }
+    public double? Rating { get; set; }
     public string? Website { get; set; }
     public string? PhoneNumber { get; set; }
     public IEnumerable<string>? Images { get; set; }
