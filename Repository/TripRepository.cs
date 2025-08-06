@@ -53,7 +53,7 @@ public class TripRepository(AppDbContext context, IPlaceService placeService) : 
                 var DestinationTerminalTask = _placeService.GetPlaceDetails(s.DestinationTerminalPlaceId);
                 await Task.WhenAll(originTerminalTask, DestinationTerminalTask);
                 s.OriginTerminal = await originTerminalTask;
-                s.DestinationTerminal = await = DestinationTerminalTask;
+                s.DestinationTerminal = await DestinationTerminalTask;
             })
         );
             getPlaceTasks.AddRange(transportationTasks);
