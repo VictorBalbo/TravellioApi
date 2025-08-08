@@ -23,7 +23,7 @@ public class TripRepository(AppDbContext context, IPlaceService placeService) : 
                 .ThenInclude(tr => tr.Segments)
             .FirstOrDefaultAsync(t => t.Id == id);
 
-         if (trip != null)
+        if (trip != null)
         {
             trip = await EnrichTripWithPlaceDetailsAsync(trip);
         }
@@ -39,7 +39,7 @@ public class TripRepository(AppDbContext context, IPlaceService placeService) : 
     private async Task<Trip> EnrichTripWithPlaceDetailsAsync(Trip trip)
     {
         var getPlaceTasks = new List<Task>();
-        if(trip.Destinations?.Any() == true)
+        if (trip.Destinations?.Any() == true)
         {
             var destinationTasks = trip.Destinations.Select(async d => d.Place = await _placeService.GetPlaceDetails(d.PlaceId));
             getPlaceTasks.AddRange(destinationTasks);
@@ -58,7 +58,7 @@ public class TripRepository(AppDbContext context, IPlaceService placeService) : 
         );
             getPlaceTasks.AddRange(transportationTasks);
         }
-        
+
         await Task.WhenAll(getPlaceTasks);
         return trip;
     }
