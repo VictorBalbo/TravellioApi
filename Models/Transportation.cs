@@ -13,11 +13,9 @@ public class Transportation : IModel
     public Price? Price { get; set; }
 
     // Foreign Keys
-    [Required]
-    public required Guid OriginId { get; set; }
+    public Guid? OriginId { get; set; }
 
-    [Required]
-    public required Guid DestinationId { get; set; }
+    public Guid? DestinationId { get; set; }
 
     public Guid TripId { get; set; }
 
@@ -26,11 +24,11 @@ public class Transportation : IModel
 
     [JsonIgnore]
     [ValidateNever]
-    public Destination Origin { get; set; } = null!;
+    public Destination? Origin { get; set; }
 
     [JsonIgnore]
     [ValidateNever]
-    public Destination Destination { get; set; } = null!;
+    public Destination? Destination { get; set; }
 
     [JsonIgnore]
     [ValidateNever]

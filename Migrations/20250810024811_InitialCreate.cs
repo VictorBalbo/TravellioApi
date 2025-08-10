@@ -105,8 +105,8 @@ namespace Travellio.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Price_Value = table.Column<decimal>(type: "decimal(9,2)", precision: 9, scale: 2, nullable: true),
                     Price_Currency = table.Column<string>(type: "VARCHAR(3)", maxLength: 3, nullable: true),
-                    OriginId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DestinationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OriginId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    DestinationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     TripId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>

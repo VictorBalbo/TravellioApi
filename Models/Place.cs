@@ -23,15 +23,15 @@ public class Place
 public class OpeningHours
 {
     [JsonPropertyName("weekday_text")]
-    public required string WeekdayText { get; set; }
+    public required IEnumerable<string> WeekdayText { get; set; }
 
-    public required Periods Periods { get; set; }
+    public required IEnumerable<Periods> Periods { get; set; }
 }
 
 public class Periods
 {
-    public required string Open { get; set; }
-    public required string Close { get; set; }
+    public required PeriodHours Open { get; set; }
+    public required PeriodHours Close { get; set; }
 }
 public class PeriodHours
 {

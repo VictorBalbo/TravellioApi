@@ -12,7 +12,7 @@ using Travellio.DbContexts;
 namespace Travellio.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250801130403_InitialCreate")]
+    [Migration("20250810024811_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -135,10 +135,10 @@ namespace Travellio.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("DestinationId")
+                    b.Property<Guid?>("DestinationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("OriginId")
+                    b.Property<Guid?>("OriginId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("TripId")
@@ -318,14 +318,12 @@ namespace Travellio.Migrations
                     b.HasOne("Travellio.Models.Destination", "Destination")
                         .WithMany()
                         .HasForeignKey("DestinationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Travellio.Models.Destination", "Origin")
                         .WithMany()
                         .HasForeignKey("OriginId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Travellio.Models.Trip", "Trip")
                         .WithMany("Transportations")
