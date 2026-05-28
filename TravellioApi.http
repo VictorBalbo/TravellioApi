@@ -1,0 +1,6 @@
+@TravellioApi_HostAddress = http://localhost:5000
+
+GET {{TravellioApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
