@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 using TravellioApi.DbContexts;
 using TravellioApi.Repositories;
+using TravellioApi.Services;
+using TravellioApi.Services.PlaceProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,11 +15,25 @@ builder.Services.AddOpenApi();
 var sqlConnectionString = builder.Configuration.GetValue<string>("SqlConnectionString");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(sqlConnectionString));
 
+var redisConnectionString = builder.Configuration.GetValue<string>("RedisConnectionString");
+if(!string.IsNullOrEmpty(redisConnectionString))
+{
+    builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
+        ConnectionMultiplexer.Connect(redisConnectionString));
+}
+
 // Add Dependency Injection
 builder.Services.AddScoped<ITripRepository, TripRepository>();
+builder.Services.AddScoped<IDestinationRepository, DestinationRepository>();
+builder.Services.AddScoped<IDestinationRepository, DestinationRepository>();
+builder.Services.AddScoped<IPlaceService, PlaceService>();
+builder.Services.AddScoped<ICachedPlaceProvider, InternalProvider>();
+builder.Services.AddScoped<IPlaceProvider, WanderlogProvider>();
 
 // Add Controllers
 builder.Services.AddControllers();
+
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
