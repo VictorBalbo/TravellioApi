@@ -5,7 +5,8 @@ using TravellioApi.Services;
 
 namespace TravellioApi.Repositories;
 
-public class TripRepository(AppDbContext context, IPlaceService placeService) : BaseRepository<Trip>(context), ITripRepository
+public class TripRepository(AppDbContext context, IPlaceService placeService)
+    : BaseRepository<Trip>(context), ITripRepository
 {
     public async Task<IEnumerable<Trip>> GetAllAsync(CancellationToken cancellationToken)
     {
@@ -16,7 +17,8 @@ public class TripRepository(AppDbContext context, IPlaceService placeService) : 
     public override async Task<Trip?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var trip = await DbSet
-            .Include(t => t.Destinations)
+            .Include(t => t.Destinations!)
+            .ThenInclude(d => d.Activities)
             .Include(t => t.Transportations!)
             .ThenInclude(tr => tr.Segments)
             .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
@@ -28,7 +30,7 @@ public class TripRepository(AppDbContext context, IPlaceService placeService) : 
 
         return trip;
     }
-    
+
     /// <summary>
     /// Enrich Trip with Place Details for Destinations and Transportations.
     /// </summary>
@@ -44,13 +46,15 @@ public class TripRepository(AppDbContext context, IPlaceService placeService) : 
                 .Select(async d => d.Place = await placeService.GetPlaceDetails(d.PlaceId, cancellationToken));
             getPlaceTasks.AddRange(destinationTasks);
         }
+
         if (trip.Transportations?.Count > 0)
         {
             var transportationTasks = trip.Transportations.SelectMany(t =>
                 t.Segments.Select(async s =>
                 {
                     var originTerminalTask = placeService.GetPlaceDetails(s.OriginTerminalPlaceId, cancellationToken);
-                    var destinationTerminalTask = placeService.GetPlaceDetails(s.DestinationTerminalPlaceId, cancellationToken);
+                    var destinationTerminalTask =
+                        placeService.GetPlaceDetails(s.DestinationTerminalPlaceId, cancellationToken);
                     await Task.WhenAll(originTerminalTask, destinationTerminalTask);
                     s.OriginTerminal = await originTerminalTask;
                     s.DestinationTerminal = await destinationTerminalTask;

@@ -23,7 +23,7 @@ public class DestinationsController(IDestinationRepository destinationRepository
     public async Task<ActionResult<Destination>> GetDestination(Guid tripId, Guid id, CancellationToken cancellationToken)
     {
         var destination = await destinationRepository.GetByIdAsync(tripId, id, cancellationToken); 
-        if (destination != null)
+        if (destination == null)
             return NotFound();
 
         return Ok(destination);

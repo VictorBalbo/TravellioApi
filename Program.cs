@@ -16,18 +16,21 @@ var sqlConnectionString = builder.Configuration.GetValue<string>("SqlConnectionS
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(sqlConnectionString));
 
 var redisConnectionString = builder.Configuration.GetValue<string>("RedisConnectionString");
-if(!string.IsNullOrEmpty(redisConnectionString))
+if (!string.IsNullOrEmpty(redisConnectionString))
 {
     builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
         ConnectionMultiplexer.Connect(redisConnectionString));
+    builder.Services.AddScoped<ICachedPlaceProvider, InternalProvider>();
+}
+else
+{
+    builder.Services.AddScoped<ICachedPlaceProvider, NullCachedPlaceProvider>();
 }
 
 // Add Dependency Injection
 builder.Services.AddScoped<ITripRepository, TripRepository>();
 builder.Services.AddScoped<IDestinationRepository, DestinationRepository>();
-builder.Services.AddScoped<IDestinationRepository, DestinationRepository>();
 builder.Services.AddScoped<IPlaceService, PlaceService>();
-builder.Services.AddScoped<ICachedPlaceProvider, InternalProvider>();
 builder.Services.AddScoped<IPlaceProvider, WanderlogProvider>();
 
 // Add Controllers
