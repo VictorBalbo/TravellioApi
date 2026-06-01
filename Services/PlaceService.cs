@@ -14,7 +14,7 @@ public class PlaceService(IPlaceProvider externalProvider, ICachedPlaceProvider 
         }
 
         place = await externalProvider.GetPlaceDetailsAsync(placeId, cancellationToken);
-        if (place != null)
+        if (place != null && !string.IsNullOrEmpty(place.Name))
         {
             await cachedProvider.SetPlaceDetailsAsync(place, cancellationToken);
             return place;

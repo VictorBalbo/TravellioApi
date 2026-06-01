@@ -8,7 +8,7 @@ namespace TravellioApi.Controllers;
 [Route("api/trips/{tripId:guid}/[controller]")]
 public class DestinationsController(IDestinationRepository destinationRepository) : ControllerBase
 {
-    // GET: api/Trip/1/Destinations
+    // GET: api/Trips/1/Destinations
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Destination>>> GetDestinations(Guid tripId, CancellationToken cancellationToken)
     {
@@ -19,13 +19,31 @@ public class DestinationsController(IDestinationRepository destinationRepository
         return Ok(destinations);
     }
 
+    // GET: api/Trips/{tripId}/Destinations/{id}
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<Destination>> GetDestination(Guid tripId, Guid id, CancellationToken cancellationToken)
     {
-        var destination = await destinationRepository.GetByIdAsync(tripId, id, cancellationToken); 
+        var destination = await destinationRepository.GetByIdAsync(tripId, id, cancellationToken);
         if (destination == null)
             return NotFound();
 
         return Ok(destination);
+    }
+
+    // POST: api/Trips/{tripId}/destinations
+    [HttpPost]
+    public async Task<ActionResult<Destination>> PostDestination(Guid tripId, Destination destination, CancellationToken cancellationToken)
+    {
+        destination.TripId = tripId;
+        await destinationRepository.AddOrUpdateAsync(destination, cancellationToken);
+        return CreatedAtAction(nameof(GetDestination), new { tripId, id = destination.Id }, destination);
+    }
+
+    // DELETE: api/Trips/{tripId}/destinations/{id}
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult> DeleteDestination(Guid tripId, Guid id, CancellationToken cancellationToken)
+    {
+        var deleted = await destinationRepository.DeleteAsync(id, cancellationToken);
+        return deleted ? NoContent() : NotFound();
     }
 }

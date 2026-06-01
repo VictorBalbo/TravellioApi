@@ -8,15 +8,20 @@ public class InternalProvider(IConnectionMultiplexer redis) : ICachedPlaceProvid
 {
     private readonly IDatabase _redis = redis.GetDatabase();
     private readonly TimeSpan _maxWaitTime = TimeSpan.FromSeconds(3);
+    private const string PlaceKeyPrefix = "place";
+    private readonly TimeSpan _defaultTtl = TimeSpan.FromDays(7);
+    private const int JitterMaxHours = 168; // 7 days
+    
 
     public async Task<Place?> GetPlaceDetailsAsync(string placeId, CancellationToken cancellationToken)
     {
         try
         {
-            var token = GetCancellationToken(cancellationToken);
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            cts.CancelAfter(_maxWaitTime);
 
-            var placeKey = $"place:{placeId}";
-            var value = await _redis.StringGetAsync(placeKey).WaitAsync(token);
+            var placeKey = $"{PlaceKeyPrefix}:{placeId}";
+            var value = await _redis.StringGetAsync(placeKey).WaitAsync(cts.Token);
 
             return value.IsNullOrEmpty ? null : JsonSerializer.Deserialize<Place>(value.ToString());
         }
@@ -36,11 +41,16 @@ public class InternalProvider(IConnectionMultiplexer redis) : ICachedPlaceProvid
     {
         try
         {
-            var token = GetCancellationToken(cancellationToken);
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            cts.CancelAfter(_maxWaitTime);
+            
+            var random = Random.Shared;
+            var jitter = TimeSpan.FromHours(random.Next(0, JitterMaxHours));
+            var ttl = _defaultTtl + jitter;
 
-            var placeKey = $"place:{place.Id}";
+            var placeKey = $"{PlaceKeyPrefix}:{place.Id}";
             var placeJson = JsonSerializer.Serialize(place);
-            return await _redis.StringSetAsync(placeKey, placeJson).WaitAsync(token);
+            return await _redis.StringSetAsync(placeKey, placeJson, ttl).WaitAsync(cts.Token);
         }
         catch (OperationCanceledException)
         {
@@ -52,12 +62,5 @@ public class InternalProvider(IConnectionMultiplexer redis) : ICachedPlaceProvid
         }
 
         return false;
-    }
-
-    private CancellationToken GetCancellationToken(CancellationToken cancellationToken)
-    {
-        using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        linkedCts.CancelAfter(_maxWaitTime);
-        return linkedCts.Token;
     }
 }

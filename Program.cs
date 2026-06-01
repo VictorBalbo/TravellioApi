@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 using TravellioApi.DbContexts;
@@ -14,7 +15,8 @@ builder.Services.AddOpenApi();
 // Add Database connections
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var sqlConnectionString = builder.Configuration.GetValue<string>("SqlConnectionString");
-builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(sqlConnectionString).UseSnakeCaseNamingConvention());
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(sqlConnectionString).UseSnakeCaseNamingConvention());
 
 var redisConnectionString = builder.Configuration.GetValue<string>("RedisConnectionString");
 if (!string.IsNullOrEmpty(redisConnectionString))
@@ -31,11 +33,14 @@ else
 // Add Dependency Injection
 builder.Services.AddScoped<ITripRepository, TripRepository>();
 builder.Services.AddScoped<IDestinationRepository, DestinationRepository>();
+builder.Services.AddScoped<ITransportationRepository, TransportationRepository>();
 builder.Services.AddScoped<IPlaceService, PlaceService>();
 builder.Services.AddScoped<IPlaceProvider, WanderlogProvider>();
 
 // Add Controllers
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+
 
 builder.Services.AddHttpClient();
 
