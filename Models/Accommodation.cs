@@ -5,8 +5,8 @@ public class Accommodation : IModel
     public Guid Id { get; set; }
     public required string Name { get; set; }
     public required string PlaceId { get; set; }
-    public DateTime? Checkin { get; set; }
-    public DateTime? Checkout { get; set; }
+    public DateTime? CheckIn { get; set; }
+    public DateTime? CheckOut { get; set; }
     public string? ImageUrl { get; set; }
     public string? Website { get; set; }
     public string? Notes { get; set; }

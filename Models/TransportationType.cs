@@ -1,6 +1,6 @@
 namespace TravellioApi.Models;
 
-public enum TransportationTypes
+public enum TransportationType
 {
     Bus,
     Car,

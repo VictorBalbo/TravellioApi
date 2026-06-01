@@ -1,4 +1,3 @@
-using Microsoft.IdentityModel.Protocols.Configuration;
 using TravellioApi.Models;
 using TravellioApi.Models.Wanderlog;
 
@@ -13,7 +12,7 @@ public class WanderlogProvider(HttpClient httpClient, IConfiguration configurati
 
         if (placeDetailsUrl == null || placeMetadataUrl == null)
         {
-            throw new InvalidConfigurationException("Wanderlog Urls not configured");
+            throw new InvalidOperationException("Wanderlog Urls not configured");
         }
 
         var detailsRequest = new HttpRequestMessage(HttpMethod.Get, placeDetailsUrl);
@@ -71,6 +70,6 @@ public class WanderlogProvider(HttpClient httpClient, IConfiguration configurati
 
     public Task<bool> AddPlaceDetailsAsync(Place place, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(false);
     }
 }

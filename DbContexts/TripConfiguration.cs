@@ -16,7 +16,9 @@ public class TripConfiguration : IEntityTypeConfiguration<Trip>
             .IsRequired();
         builder.Property(p => p.EndDate)
             .IsRequired();
-        
+        builder.Property(p => p.HomePlaceId)
+            .HasMaxLength(Constants.PlaceIdSize);
+
         // Trip → Destinations (1:N)
         builder
             .HasMany(t => t.Destinations)
@@ -29,6 +31,7 @@ public class TripConfiguration : IEntityTypeConfiguration<Trip>
             .HasMany(t => t.Transportations)
             .WithOne()
             .HasForeignKey(tp => tp.TripId)
+            .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

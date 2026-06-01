@@ -41,7 +41,7 @@ public class TripsController(ITripRepository tripRepository) : ControllerBase
         return CreatedAtAction("GetTrip", new { tripId = trip.Id }, trip);
     }
 
-    // POST: api/Trips/1
+    // DELETE: api/Trips/1
     [HttpDelete("{tripId:guid}")]
     public async Task<ActionResult> DeleteTrip(Guid tripId, CancellationToken cancellationToken)
     {

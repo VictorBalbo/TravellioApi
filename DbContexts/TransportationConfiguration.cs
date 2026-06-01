@@ -11,23 +11,23 @@ public class TransportationConfiguration : IEntityTypeConfiguration<Transportati
         builder.HasKey(p => p.Id);
         builder.OwnsOne(p => p.Price, PriceConfiguration.Configure);
 
-        // Transportation → Origin (N:1)
+        // Transportation → ArrivalDestination (N:1)
         builder
-            .HasOne(tp => tp.Origin)
+            .HasOne(tp => tp.Arrival)
             .WithMany()
-            .HasForeignKey(tp => tp.OriginId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(tp => tp.ArrivalDestinationId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        // Transportation → Destination (N:1)
+        // Transportation → DepartureDestination (N:1)
         builder
-            .HasOne(tp => tp.Destination)
+            .HasOne(tp => tp.Departure)
             .WithMany()
-            .HasForeignKey(tp => tp.DestinationId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(tp => tp.DepartureDestinationId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        // Transportation → TransportationSegments (1:N)
+        // Transportation → Leg (1:N)
         builder
-            .HasMany(t => t.Segments)
+            .HasMany(t => t.Legs)
             .WithOne()
             .HasForeignKey(ts => ts.TransportationId)
             .OnDelete(DeleteBehavior.Cascade);

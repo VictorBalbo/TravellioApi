@@ -20,7 +20,7 @@ public class TripRepository(AppDbContext context, IPlaceService placeService)
             .Include(t => t.Destinations!)
             .ThenInclude(d => d.Activities)
             .Include(t => t.Transportations!)
-            .ThenInclude(tr => tr.Segments)
+            .ThenInclude(tr => tr.Legs)
             .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
 
         if (trip != null)
@@ -50,14 +50,14 @@ public class TripRepository(AppDbContext context, IPlaceService placeService)
         if (trip.Transportations?.Count > 0)
         {
             var transportationTasks = trip.Transportations.SelectMany(t =>
-                t.Segments.Select(async s =>
+                t.Legs.Select(async s =>
                 {
-                    var originTerminalTask = placeService.GetPlaceDetails(s.OriginTerminalPlaceId, cancellationToken);
+                    var originTerminalTask = placeService.GetPlaceDetails(s.DeparturePlaceId, cancellationToken);
                     var destinationTerminalTask =
-                        placeService.GetPlaceDetails(s.DestinationTerminalPlaceId, cancellationToken);
+                        placeService.GetPlaceDetails(s.ArrivalPlaceId, cancellationToken);
                     await Task.WhenAll(originTerminalTask, destinationTerminalTask);
-                    s.OriginTerminal = await originTerminalTask;
-                    s.DestinationTerminal = await destinationTerminalTask;
+                    s.DeparturePlace = await originTerminalTask;
+                    s.ArrivalPlace = await destinationTerminalTask;
                 })
             );
             getPlaceTasks.AddRange(transportationTasks);

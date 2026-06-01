@@ -27,7 +27,7 @@ public class DestinationConfiguration : IEntityTypeConfiguration<Destination>
             .HasForeignKey(a => a.DestinationId)
             .OnDelete(DeleteBehavior.Cascade);
         
-        // Destination → Accommodation (1:N)
+        // Destination → Accommodations (1:N)
         builder
             .HasMany(d => d.Accommodations)
             .WithOne()

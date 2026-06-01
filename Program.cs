@@ -12,8 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 // Add Database connections
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var sqlConnectionString = builder.Configuration.GetValue<string>("SqlConnectionString");
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(sqlConnectionString));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(sqlConnectionString).UseSnakeCaseNamingConvention());
 
 var redisConnectionString = builder.Configuration.GetValue<string>("RedisConnectionString");
 if (!string.IsNullOrEmpty(redisConnectionString))
