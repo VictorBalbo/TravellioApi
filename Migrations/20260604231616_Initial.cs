@@ -83,6 +83,8 @@ namespace TravellioApi.Migrations
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     place_id = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
                     scheduled_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    ticket_required = table.Column<bool>(type: "boolean", nullable: true),
+                    ticket_purchased = table.Column<bool>(type: "boolean", nullable: true),
                     price_value = table.Column<decimal>(type: "numeric(9,2)", precision: 9, scale: 2, nullable: true),
                     price_currency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: true),
                     website = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),

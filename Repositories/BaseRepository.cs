@@ -4,7 +4,7 @@ using TravellioApi.Models;
 
 namespace TravellioApi.Repositories;
 
-public abstract class BaseRepository<T> : IRepository<T> where T : class, IModel
+public abstract class BaseRepository<T> : IRepository<T> where T : class, IBaseEntity
 {
     protected readonly AppDbContext Context;
     protected readonly DbSet<T> DbSet;

@@ -4,11 +4,12 @@ using TravellioApi.Models;
 
 namespace TravellioApi.DbContexts;
 
-public class LegConfiguration : IEntityTypeConfiguration<Leg>
+public class LegConfiguration : BaseEntityConfiguration<Leg>
 {
-    public void Configure(EntityTypeBuilder<Leg> builder)
+    public override void Configure(EntityTypeBuilder<Leg> builder)
     {
-        builder.HasKey(p => p.Id);
+        base.Configure(builder);
+
         builder.Property(p => p.DeparturePlaceId)
             .IsRequired()
             .HasMaxLength(Constants.PlaceIdSize);

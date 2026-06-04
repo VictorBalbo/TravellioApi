@@ -109,6 +109,14 @@ namespace TravellioApi.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("scheduled_at");
 
+                    b.Property<bool?>("TicketPurchased")
+                        .HasColumnType("boolean")
+                        .HasColumnName("ticket_purchased");
+
+                    b.Property<bool?>("TicketRequired")
+                        .HasColumnType("boolean")
+                        .HasColumnName("ticket_required");
+
                     b.Property<string>("Website")
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")

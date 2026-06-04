@@ -1,6 +1,6 @@
 namespace TravellioApi.Models;
 
-public interface IModel
+public interface IBaseEntity
 {
     public Guid Id { get; set; }
 }

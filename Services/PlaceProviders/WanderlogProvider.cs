@@ -57,7 +57,8 @@ public class WanderlogProvider(HttpClient httpClient, IConfiguration configurati
             Address = placeDetails?.FormattedAddress ?? placeMetadata?.Address,
             Description = placeMetadata?.GeneratedDescription ?? placeMetadata?.Description,
             Categories = placeMetadata?.Categories,
-            Vicinity = placeDetails?.Vicinity,
+            Vicinity = placeDetails?.AddressComponents?.FirstOrDefault(a => a.Types.Contains("locality", StringComparer.OrdinalIgnoreCase))?.ShortName ??
+                       placeDetails?.Vicinity,
             Rating = placeDetails?.Rating ?? placeMetadata?.Rating,
             PhoneNumber = placeDetails?.InternationalPhoneNumber ?? placeMetadata?.InternationalPhoneNumber,
             Website = placeDetails?.Website ?? placeMetadata?.Website,

@@ -43,7 +43,7 @@ public class TransportationRepository(AppDbContext context, IPlaceService placeS
         var getPlaceTasks = new List<Task>();
 
         var originTask = Task.FromResult<Place?>(null);
-        var destinationTask = Task.FromResult<Place?>(null);;
+        var destinationTask = Task.FromResult<Place?>(null);
         if (transportation.Arrival?.PlaceId != null)
         {
             originTask = placeService.GetPlaceDetails(transportation.Arrival.PlaceId, cancellationToken);

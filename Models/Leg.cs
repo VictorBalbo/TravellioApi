@@ -1,6 +1,6 @@
 namespace TravellioApi.Models;
 
-public class Leg : IModel
+public class Leg : IBaseEntity
 {
     public Guid Id { get; set; }
     public required string DeparturePlaceId { get; set; }

@@ -4,11 +4,12 @@ using TravellioApi.Models;
 
 namespace TravellioApi.DbContexts;
 
-public class DestinationConfiguration : IEntityTypeConfiguration<Destination>
+public class DestinationConfiguration : BaseEntityConfiguration<Destination>
 {
-    public void Configure(EntityTypeBuilder<Destination> builder)
+    public override void Configure(EntityTypeBuilder<Destination> builder)
     {
-        builder.HasKey(p => p.Id);
+        base.Configure(builder);
+
         builder.Property(p => p.PlaceId)
             .IsRequired()
             .HasMaxLength(Constants.PlaceIdSize);
@@ -19,14 +20,14 @@ public class DestinationConfiguration : IEntityTypeConfiguration<Destination>
         builder.Property(p => p.Notes)
             .HasMaxLength(5000);
         builder.Ignore(x => x.Place);
-        
+
         // Destination → Activities (1:N)
         builder
             .HasMany(d => d.Activities)
-                .WithOne()
+            .WithOne()
             .HasForeignKey(a => a.DestinationId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
         // Destination → Accommodations (1:N)
         builder
             .HasMany(d => d.Accommodations)

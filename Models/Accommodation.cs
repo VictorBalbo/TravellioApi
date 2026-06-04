@@ -1,6 +1,6 @@
 namespace TravellioApi.Models;
 
-public class Accommodation : IModel
+public class Accommodation : IBaseEntity
 {
     public Guid Id { get; set; }
     public required string Name { get; set; }

@@ -4,11 +4,12 @@ using TravellioApi.Models;
 
 namespace TravellioApi.DbContexts;
 
-public class TripConfiguration : IEntityTypeConfiguration<Trip>
+public class TripConfiguration : BaseEntityConfiguration<Trip>
 {
-    public void Configure(EntityTypeBuilder<Trip> builder)
+    public override void Configure(EntityTypeBuilder<Trip> builder)
     {
-        builder.HasKey(p => p.Id);
+        base.Configure(builder);
+
         builder.Property(p => p.Name)
             .IsRequired()
             .HasMaxLength(100);

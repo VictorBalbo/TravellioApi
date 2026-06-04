@@ -4,11 +4,12 @@ using TravellioApi.Models;
 
 namespace TravellioApi.DbContexts;
 
-public class TransportationConfiguration : IEntityTypeConfiguration<Transportation>
+public class TransportationConfiguration : BaseEntityConfiguration<Transportation>
 {
-    public void Configure(EntityTypeBuilder<Transportation> builder)
+    public override void Configure(EntityTypeBuilder<Transportation> builder)
     {
-        builder.HasKey(p => p.Id);
+        base.Configure(builder);
+
         builder.OwnsOne(p => p.Price, PriceConfiguration.Configure);
 
         // Transportation → ArrivalDestination (N:1)
@@ -24,6 +25,9 @@ public class TransportationConfiguration : IEntityTypeConfiguration<Transportati
             .WithMany()
             .HasForeignKey(tp => tp.DepartureDestinationId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Ignore(t => t.DepartureTime);
+        builder.Ignore(t => t.ArrivalTime);
 
         // Transportation → Leg (1:N)
         builder

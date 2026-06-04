@@ -12,7 +12,7 @@ using TravellioApi.DbContexts;
 namespace TravellioApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260601005451_Initial")]
+    [Migration("20260604231616_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -111,6 +111,14 @@ namespace TravellioApi.Migrations
                     b.Property<DateTime?>("ScheduledAt")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("scheduled_at");
+
+                    b.Property<bool?>("TicketPurchased")
+                        .HasColumnType("boolean")
+                        .HasColumnName("ticket_purchased");
+
+                    b.Property<bool?>("TicketRequired")
+                        .HasColumnType("boolean")
+                        .HasColumnName("ticket_required");
 
                     b.Property<string>("Website")
                         .HasMaxLength(255)
