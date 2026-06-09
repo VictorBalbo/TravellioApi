@@ -20,4 +20,27 @@ public class PlacesController(IPlaceService placeService) : ControllerBase
 
         return Ok(place);
     }
+
+    // GET: api/places/autocomplete?input=paris&lat=48.8&lng=2.3&radius=5000&language=en
+    [HttpGet("autocomplete")]
+    public async Task<ActionResult> GetAutoComplete(
+        [FromQuery] string input,
+        [FromQuery] double lat,
+        [FromQuery] double lng,
+        [FromQuery] double radius,
+        [FromQuery] string language,
+        [FromQuery] string? sessionToken,
+        CancellationToken cancellationToken)
+    {
+        var place = await placeService.GetAutoComplete(
+            input,
+            sessionToken ?? Guid.CreateVersion7().ToString(),
+            lat,
+            lng,
+            radius,
+            language,
+            cancellationToken);
+
+        return Ok(place);
+    }
 }
