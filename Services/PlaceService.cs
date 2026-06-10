@@ -1,6 +1,6 @@
 using Serilog;
-using TravellioApi.Models;
 using TravellioApi.Models.DTOs;
+using TravellioApi.Models.Entities;
 using TravellioApi.Services.PlaceProviders;
 
 namespace TravellioApi.Services;
@@ -18,6 +18,7 @@ public class PlaceService(
             diagnosticContext.Set("CacheResult", "Hit");
             return place;
         }
+
         diagnosticContext.Set("CacheResult", "Miss");
 
 
@@ -43,8 +44,9 @@ public class PlaceService(
             diagnosticContext.Set("CacheResult", "Hit");
             return autoComplete;
         }
+
         diagnosticContext.Set("CacheResult", "Miss");
-        
+
 
         autoComplete = await externalProvider.GetAutoCompleteAsync(text, sessionToken, lat, lng, radius, language,
             cancellationToken);

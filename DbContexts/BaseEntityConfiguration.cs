@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
-using TravellioApi.Models;
+using TravellioApi.Models.Entities;
 
 namespace TravellioApi.DbContexts;
 

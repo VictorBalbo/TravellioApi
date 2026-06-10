@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using TravellioApi.Models;
+using TravellioApi.Models.Entities;
 using TravellioApi.Services;
 
 namespace TravellioApi.Controllers;
@@ -24,7 +24,7 @@ public class PlacesController(IPlaceService placeService) : ControllerBase
     // GET: api/places/autocomplete?input=paris&lat=48.8&lng=2.3&radius=5000&language=en
     [HttpGet("Autocomplete")]
     public async Task<ActionResult> GetAutoComplete(
-        [FromQuery] string input,
+        [FromQuery] string text,
         [FromQuery] double lat,
         [FromQuery] double lng,
         [FromQuery] double radius,
@@ -33,7 +33,7 @@ public class PlacesController(IPlaceService placeService) : ControllerBase
         CancellationToken cancellationToken)
     {
         var place = await placeService.GetAutoComplete(
-            input,
+            text,
             sessionToken ?? Guid.CreateVersion7().ToString(),
             lat,
             lng,

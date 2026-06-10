@@ -1,6 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TravellioApi.Models;
+using TravellioApi.Models.Entities;
 
 namespace TravellioApi.DbContexts;
 
@@ -9,7 +8,7 @@ public class AccommodationConfiguration : BaseEntityConfiguration<Accommodation>
     public override void Configure(EntityTypeBuilder<Accommodation> builder)
     {
         base.Configure(builder);
-        
+
         builder.Property(p => p.Name)
             .IsRequired()
             .HasMaxLength(100);

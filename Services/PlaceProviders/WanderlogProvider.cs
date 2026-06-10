@@ -1,6 +1,6 @@
 using System.Text.Json;
-using TravellioApi.Models;
 using TravellioApi.Models.DTOs;
+using TravellioApi.Models.Entities;
 using TravellioApi.Models.Wanderlog;
 
 namespace TravellioApi.Services.PlaceProviders;

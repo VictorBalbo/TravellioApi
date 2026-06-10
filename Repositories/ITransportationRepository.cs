@@ -1,4 +1,4 @@
-using TravellioApi.Models;
+using TravellioApi.Models.Entities;
 
 namespace TravellioApi.Repositories;
 

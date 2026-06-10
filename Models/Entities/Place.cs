@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace TravellioApi.Models;
+namespace TravellioApi.Models.Entities;
 
 public class Place
 {

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TravellioApi.DbContexts;
-using TravellioApi.Models;
+using TravellioApi.Models.Entities;
 using TravellioApi.Services;
 
 namespace TravellioApi.Repositories;
@@ -46,6 +46,7 @@ public class TripRepository(AppDbContext context, IPlaceService placeService)
                 .Select(async d => d.Place = await placeService.GetPlaceDetails(d.PlaceId, cancellationToken));
             getPlaceTasks.AddRange(destinationTasks);
         }
+
 
         if (trip.Transportations?.Count > 0)
         {

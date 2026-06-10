@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TravellioApi.DbContexts;
-using TravellioApi.Models;
+using TravellioApi.Models.Entities;
 using TravellioApi.Services;
 
 namespace TravellioApi.Repositories;
@@ -55,7 +55,7 @@ public class TransportationRepository(AppDbContext context, IPlaceService placeS
             destinationTask = placeService.GetPlaceDetails(transportation.Departure.PlaceId, cancellationToken);
             getPlaceTasks.Add(destinationTask);
         }
-        
+
         await Task.WhenAll(getPlaceTasks);
         transportation.Arrival?.Place = await originTask;
         transportation.Departure?.Place = await destinationTask;

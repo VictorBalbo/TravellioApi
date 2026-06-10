@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using TravellioApi.Models;
+using TravellioApi.Models.Entities;
 using TravellioApi.Repositories;
 
 namespace TravellioApi.Controllers;
@@ -19,7 +19,7 @@ public class TripsController(ITripRepository tripRepository) : ControllerBase
 
         return Ok(trips);
     }
-    
+
     // GET: api/Trips/1
     [HttpGet("{tripId:guid}")]
     public async Task<ActionResult<Trip>> GetTrip(Guid tripId, CancellationToken cancellationToken)
@@ -29,10 +29,10 @@ public class TripsController(ITripRepository tripRepository) : ControllerBase
         {
             return NotFound();
         }
-        
+
         return trip;
     }
-    
+
     // POST: api/Trips
     [HttpPost]
     public async Task<ActionResult<Trip>> PostTrip(Trip trip, CancellationToken cancellationToken)

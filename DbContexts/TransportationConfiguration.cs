@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TravellioApi.Models;
+using TravellioApi.Models.Entities;
 
 namespace TravellioApi.DbContexts;
 

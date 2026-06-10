@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using TravellioApi.Models;
+using TravellioApi.Models.Entities;
 
 namespace TravellioApi.DbContexts;
 

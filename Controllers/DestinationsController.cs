@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using TravellioApi.Models;
+using TravellioApi.Models.Entities;
 using TravellioApi.Repositories;
 
 namespace TravellioApi.Controllers;
@@ -10,9 +10,10 @@ public class DestinationsController(IDestinationRepository destinationRepository
 {
     // GET: api/Trips/1/Destinations
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Destination>>> GetDestinations(Guid tripId, CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<Destination>>> GetDestinations(Guid tripId,
+        CancellationToken cancellationToken)
     {
-        var destinations = await destinationRepository.GetAllAsync(tripId, cancellationToken); 
+        var destinations = await destinationRepository.GetAllAsync(tripId, cancellationToken);
         if (destinations.Count == 0)
             return NotFound();
 
@@ -21,7 +22,8 @@ public class DestinationsController(IDestinationRepository destinationRepository
 
     // GET: api/Trips/{tripId}/Destinations/{id}
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<Destination>> GetDestination(Guid tripId, Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<Destination>> GetDestination(Guid tripId, Guid id,
+        CancellationToken cancellationToken)
     {
         var destination = await destinationRepository.GetByIdAsync(tripId, id, cancellationToken);
         if (destination == null)
@@ -32,7 +34,8 @@ public class DestinationsController(IDestinationRepository destinationRepository
 
     // POST: api/Trips/{tripId}/destinations
     [HttpPost]
-    public async Task<ActionResult<Destination>> PostDestination(Guid tripId, Destination destination, CancellationToken cancellationToken)
+    public async Task<ActionResult<Destination>> PostDestination(Guid tripId, Destination destination,
+        CancellationToken cancellationToken)
     {
         destination.TripId = tripId;
         await destinationRepository.AddOrUpdateAsync(destination, cancellationToken);

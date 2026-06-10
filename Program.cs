@@ -57,7 +57,7 @@ app.UseSerilogRequestLogging(options =>
     options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
     {
         var endpoint = httpContext.GetEndpoint() as RouteEndpoint;
-        var routePattern = endpoint?.RoutePattern?.RawText ?? httpContext.Request.Path;
+        var routePattern = endpoint?.RoutePattern.RawText ?? httpContext.Request.Path;
 
         diagnosticContext.Set("RouteTemplate", routePattern);
     };

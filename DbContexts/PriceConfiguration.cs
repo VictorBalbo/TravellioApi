@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TravellioApi.Models;
+using TravellioApi.Models.Entities;
 
 namespace TravellioApi.DbContexts;
 
 public static class PriceConfiguration
 {
-    public static void Configure<TOwner>(OwnedNavigationBuilder<TOwner,Price> builder) where TOwner : class
+    public static void Configure<TOwner>(OwnedNavigationBuilder<TOwner, Price> builder) where TOwner : class
     {
         builder.Property(p => p.Value)
             .HasPrecision(9, 2);
