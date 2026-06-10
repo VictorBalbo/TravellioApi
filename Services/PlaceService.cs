@@ -1,18 +1,25 @@
+using Serilog;
 using TravellioApi.Models;
 using TravellioApi.Models.DTOs;
 using TravellioApi.Services.PlaceProviders;
 
 namespace TravellioApi.Services;
 
-public class PlaceService(IPlaceProvider externalProvider, ICachedPlaceProvider cachedProvider) : IPlaceService
+public class PlaceService(
+    IPlaceProvider externalProvider,
+    ICachedPlaceProvider cachedProvider,
+    IDiagnosticContext diagnosticContext) : IPlaceService
 {
     public async Task<Place?> GetPlaceDetails(string placeId, CancellationToken cancellationToken)
     {
         var place = await cachedProvider.GetPlaceDetailsAsync(placeId, cancellationToken);
         if (place != null)
         {
+            diagnosticContext.Set("CacheResult", "Hit");
             return place;
         }
+        diagnosticContext.Set("CacheResult", "Miss");
+
 
         place = await externalProvider.GetPlaceDetailsAsync(placeId, cancellationToken);
         if (place != null && !string.IsNullOrEmpty(place.Name))
@@ -33,8 +40,11 @@ public class PlaceService(IPlaceProvider externalProvider, ICachedPlaceProvider 
                 cancellationToken);
         if (autoComplete != null)
         {
+            diagnosticContext.Set("CacheResult", "Hit");
             return autoComplete;
         }
+        diagnosticContext.Set("CacheResult", "Miss");
+        
 
         autoComplete = await externalProvider.GetAutoCompleteAsync(text, sessionToken, lat, lng, radius, language,
             cancellationToken);

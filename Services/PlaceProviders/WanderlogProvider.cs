@@ -5,7 +5,8 @@ using TravellioApi.Models.Wanderlog;
 
 namespace TravellioApi.Services.PlaceProviders;
 
-public class WanderlogProvider(HttpClient httpClient, IConfiguration configuration) : IPlaceProvider
+public class WanderlogProvider(HttpClient httpClient, IConfiguration configuration, ILogger<WanderlogProvider> logger)
+    : IPlaceProvider
 {
     private static readonly JsonSerializerOptions SerializerOptions =
         new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
@@ -17,6 +18,7 @@ public class WanderlogProvider(HttpClient httpClient, IConfiguration configurati
 
         if (placeDetailsUrl == null || placeMetadataUrl == null)
         {
+            logger.LogWarning("Wanderlog urls not configured");
             throw new InvalidOperationException("Wanderlog Urls not configured");
         }
 
@@ -39,6 +41,12 @@ public class WanderlogProvider(HttpClient httpClient, IConfiguration configurati
                     cancellationToken);
             placeDetails = response?.Data;
         }
+        else
+        {
+            var body = await detailsResponse.Content.ReadAsStringAsync(cancellationToken);
+            logger.LogWarning("Wanderlog PlaceDetails request failed for {PlaceId} with status {StatusCode}: {Body}",
+                placeId, detailsResponse.StatusCode, body);
+        }
 
         WanderlogPlaceMetadata? placeMetadata = null;
         if (metadataResponse.IsSuccessStatusCode)
@@ -47,6 +55,12 @@ public class WanderlogProvider(HttpClient httpClient, IConfiguration configurati
                 await metadataResponse.Content
                     .ReadFromJsonAsync<WanderlogResponse<IEnumerable<WanderlogPlaceMetadata>>>(cancellationToken);
             placeMetadata = response?.Data?.FirstOrDefault();
+        }
+        else
+        {
+            var body = await metadataResponse.Content.ReadAsStringAsync(cancellationToken);
+            logger.LogWarning("Wanderlog PlaceMetadata request failed for {PlaceId} with status {StatusCode}: {Body}",
+                placeId, metadataResponse.StatusCode, body);
         }
 
 
@@ -98,6 +112,9 @@ public class WanderlogProvider(HttpClient httpClient, IConfiguration configurati
 
         if (!autoCompleteResponse.IsSuccessStatusCode)
         {
+            var body = await autoCompleteResponse.Content.ReadAsStringAsync(cancellationToken);
+            logger.LogWarning("Wanderlog AutoComplete request failed for '{Text}' with status {StatusCode}: {Body}",
+                text, autoCompleteResponse.StatusCode, body);
             return null;
         }
 

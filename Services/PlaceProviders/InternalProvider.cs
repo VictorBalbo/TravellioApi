@@ -5,7 +5,7 @@ using TravellioApi.Models.DTOs;
 
 namespace TravellioApi.Services.PlaceProviders;
 
-public class InternalProvider(IConnectionMultiplexer redis) : ICachedPlaceProvider
+public class InternalProvider(IConnectionMultiplexer redis, ILogger<InternalProvider> logger) : ICachedPlaceProvider
 {
     private readonly IDatabase _redis = redis.GetDatabase();
     private readonly TimeSpan _maxWaitTime = TimeSpan.FromSeconds(3);
@@ -33,11 +33,12 @@ public class InternalProvider(IConnectionMultiplexer redis) : ICachedPlaceProvid
         }
         catch (OperationCanceledException)
         {
-            Console.WriteLine("Redis operation cancelled");
+            logger.LogWarning("Redis operation cancelled");
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Redis operation error {e.Message}");
+            logger.LogWarning("Redis operation error {Message} during {Operation}", e.Message,
+                nameof(GetPlaceDetailsAsync));
         }
 
         return null;
@@ -60,11 +61,12 @@ public class InternalProvider(IConnectionMultiplexer redis) : ICachedPlaceProvid
         }
         catch (OperationCanceledException)
         {
-            Console.WriteLine("Redis operation cancelled");
+            logger.LogWarning("Redis operation cancelled");
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Redis operation error {e.Message}");
+            logger.LogWarning("Redis operation error {Message} during {Operation}", e.Message,
+                nameof(SetPlaceDetailsAsync));
         }
 
         return false;
@@ -91,11 +93,12 @@ public class InternalProvider(IConnectionMultiplexer redis) : ICachedPlaceProvid
         }
         catch (OperationCanceledException)
         {
-            Console.WriteLine("Redis operation cancelled");
+            logger.LogWarning("Redis operation cancelled");
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Redis operation error {e.Message}");
+            logger.LogWarning("Redis operation error {Message} during {Operation}", e.Message,
+                nameof(GetAutoCompleteAsync));
         }
 
         return null;
@@ -122,11 +125,12 @@ public class InternalProvider(IConnectionMultiplexer redis) : ICachedPlaceProvid
         }
         catch (OperationCanceledException)
         {
-            Console.WriteLine("Redis operation cancelled");
+            logger.LogWarning("Redis operation cancelled");
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Redis operation error {e.Message}");
+            logger.LogWarning("Redis operation error {Message} during {Operation}", e.Message,
+                nameof(SetAutoCompleteAsync));
         }
 
         return false;

@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using StackExchange.Redis;
 using TravellioApi.DbContexts;
 using TravellioApi.Repositories;
@@ -40,11 +41,27 @@ builder.Services.AddScoped<IPlaceProvider, WanderlogProvider>();
 // Add Controllers
 builder.Services.AddControllers()
     .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
-
-
 builder.Services.AddHttpClient();
 
+// Add Loggers
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+builder.Host.UseSerilog();
+
+// Build
 var app = builder.Build();
+
+app.UseSerilogRequestLogging(options =>
+{
+    options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+    {
+        var endpoint = httpContext.GetEndpoint() as RouteEndpoint;
+        var routePattern = endpoint?.RoutePattern?.RawText ?? httpContext.Request.Path;
+
+        diagnosticContext.Set("RouteTemplate", routePattern);
+    };
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

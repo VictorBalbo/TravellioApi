@@ -6,7 +6,7 @@ namespace TravellioApi.Controllers;
 
 //TODO: Add auth
 [ApiController]
-[Route("api/[controller]")]
+[Route("Api/[controller]")]
 public class TripsController(ITripRepository tripRepository) : ControllerBase
 {
     // GET: api/Trips

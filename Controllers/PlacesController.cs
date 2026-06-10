@@ -5,7 +5,7 @@ using TravellioApi.Services;
 namespace TravellioApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("Api/[controller]")]
 public class PlacesController(IPlaceService placeService) : ControllerBase
 {
     // GET: api/places/{id}
@@ -22,7 +22,7 @@ public class PlacesController(IPlaceService placeService) : ControllerBase
     }
 
     // GET: api/places/autocomplete?input=paris&lat=48.8&lng=2.3&radius=5000&language=en
-    [HttpGet("autocomplete")]
+    [HttpGet("Autocomplete")]
     public async Task<ActionResult> GetAutoComplete(
         [FromQuery] string input,
         [FromQuery] double lat,

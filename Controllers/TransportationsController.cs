@@ -5,7 +5,7 @@ using TravellioApi.Repositories;
 namespace TravellioApi.Controllers;
 
 [ApiController]
-[Route("api/trips/{tripId:guid}/[controller]")]
+[Route("Api/Trips/{tripId:guid}/[controller]")]
 public class TransportationsController(ITransportationRepository transportationRepository) : ControllerBase
 {
     // GET: api/Trips/1/Transportations
