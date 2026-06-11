@@ -37,6 +37,9 @@ builder.Services.AddScoped<IDestinationRepository, DestinationRepository>();
 builder.Services.AddScoped<ITransportationRepository, TransportationRepository>();
 builder.Services.AddScoped<IPlaceService, PlaceService>();
 builder.Services.AddScoped<IPlaceProvider, WanderlogProvider>();
+builder.Services.AddScoped<ITripService, TripService>();
+builder.Services.AddScoped<IDestinationService, DestinationService>();
+builder.Services.AddScoped<ITransportationService, TransportationService>();
 
 // Add Controllers
 builder.Services.AddControllers()

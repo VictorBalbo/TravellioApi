@@ -1,6 +1,5 @@
 using Serilog;
 using TravellioApi.Models.DTOs;
-using TravellioApi.Models.Entities;
 using TravellioApi.Services.PlaceProviders;
 
 namespace TravellioApi.Services;

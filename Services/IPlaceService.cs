@@ -1,5 +1,4 @@
 using TravellioApi.Models.DTOs;
-using TravellioApi.Models.Entities;
 
 namespace TravellioApi.Services;
 
