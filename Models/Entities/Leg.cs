@@ -2,7 +2,7 @@ namespace TravellioApi.Models.Entities;
 
 public class Leg : IBaseEntity
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; set; }
     public required string DeparturePlaceId { get; set; }
     public required string ArrivalPlaceId { get; set; }
     public TransportationType Type { get; set; }
@@ -15,9 +15,5 @@ public class Leg : IBaseEntity
     public string? Seat { get; set; }
 
     // Foreign Key
-    public Guid TransportationId { get; set; }
-
-    // DTO Objects
-    public Place? DeparturePlace { get; set; }
-    public Place? ArrivalPlace { get; set; }
+    public required Guid TransportationId { get; set; }
 }

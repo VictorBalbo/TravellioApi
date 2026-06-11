@@ -2,7 +2,7 @@ namespace TravellioApi.Models.Entities;
 
 public class Destination : IBaseEntity
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; set; }
     public required string PlaceId { get; set; }
     public required DateOnly StartDate { get; set; }
     public required DateOnly EndDate { get; set; }
@@ -11,8 +11,5 @@ public class Destination : IBaseEntity
     public ICollection<Activity>? Activities { get; set; }
 
     // Foreign Key
-    public Guid TripId { get; set; }
-
-    // DTO properties
-    public Place? Place { get; set; }
+    public required Guid TripId { get; set; }
 }

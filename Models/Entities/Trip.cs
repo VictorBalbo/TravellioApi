@@ -2,7 +2,7 @@ namespace TravellioApi.Models.Entities;
 
 public class Trip : IBaseEntity
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; set; }
     public required string Name { get; set; }
     public required DateOnly StartDate { get; set; }
     public required DateOnly EndDate { get; set; }

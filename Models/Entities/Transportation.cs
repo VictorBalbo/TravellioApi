@@ -2,7 +2,7 @@ namespace TravellioApi.Models.Entities;
 
 public class Transportation : IBaseEntity
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; set; }
     public Price? Price { get; set; }
     public required ICollection<Leg> Legs { get; set; } = [];
 
@@ -14,8 +14,4 @@ public class Transportation : IBaseEntity
     // Navigation properties
     public Destination? Arrival { get; set; }
     public Destination? Departure { get; set; }
-
-    // Computed properties
-    public DateTime? DepartureTime => Legs.OrderBy(l => l.DepartureTime).FirstOrDefault()?.DepartureTime;
-    public DateTime? ArrivalTime => Legs.OrderBy(l => l.DepartureTime).LastOrDefault()?.ArrivalTime;
 }
