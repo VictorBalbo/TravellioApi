@@ -27,7 +27,5 @@ public class LegConfiguration : BaseEntityConfiguration<Leg>
         builder.Property(p => p.Seat)
             .HasMaxLength(10);
         builder.OwnsOne(p => p.Price, PriceConfiguration.Configure);
-        builder.Ignore(x => x.DeparturePlace);
-        builder.Ignore(x => x.ArrivalPlace);
     }
 }

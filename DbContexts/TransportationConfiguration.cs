@@ -26,9 +26,6 @@ public class TransportationConfiguration : BaseEntityConfiguration<Transportatio
             .HasForeignKey(tp => tp.DepartureDestinationId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Ignore(t => t.DepartureTime);
-        builder.Ignore(t => t.ArrivalTime);
-
         // Transportation → Leg (1:N)
         builder
             .HasMany(t => t.Legs)

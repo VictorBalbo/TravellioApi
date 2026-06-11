@@ -1,19 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
-using TravellioApi.Models.Entities;
-using TravellioApi.Repositories;
+using TravellioApi.Models.DTOs;
+using TravellioApi.Services;
 
 namespace TravellioApi.Controllers;
 
 [ApiController]
 [Route("Api/Trips/{tripId:guid}/[controller]")]
-public class DestinationsController(IDestinationRepository destinationRepository) : ControllerBase
+public class DestinationsController(IDestinationService destinationService) : ControllerBase
 {
     // GET: api/Trips/1/Destinations
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Destination>>> GetDestinations(Guid tripId,
+    public async Task<ActionResult<IEnumerable<DestinationDto>>> GetDestinations(Guid tripId,
         CancellationToken cancellationToken)
     {
-        var destinations = await destinationRepository.GetAllAsync(tripId, cancellationToken);
+        var destinations = await destinationService.GetAllAsync(tripId, cancellationToken);
         if (destinations.Count == 0)
             return NotFound();
 
@@ -22,10 +22,10 @@ public class DestinationsController(IDestinationRepository destinationRepository
 
     // GET: api/Trips/{tripId}/Destinations/{id}
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<Destination>> GetDestination(Guid tripId, Guid id,
+    public async Task<ActionResult<DestinationDto>> GetDestination(Guid tripId, Guid id,
         CancellationToken cancellationToken)
     {
-        var destination = await destinationRepository.GetByIdAsync(tripId, id, cancellationToken);
+        var destination = await destinationService.GetByIdAsync(tripId, id, cancellationToken);
         if (destination == null)
             return NotFound();
 
@@ -34,19 +34,18 @@ public class DestinationsController(IDestinationRepository destinationRepository
 
     // POST: api/Trips/{tripId}/destinations
     [HttpPost]
-    public async Task<ActionResult<Destination>> PostDestination(Guid tripId, Destination destination,
+    public async Task<ActionResult<DestinationDto>> PostDestination(Guid tripId, DestinationDto destination,
         CancellationToken cancellationToken)
     {
-        destination.TripId = tripId;
-        await destinationRepository.AddOrUpdateAsync(destination, cancellationToken);
-        return CreatedAtAction(nameof(GetDestination), new { tripId, id = destination.Id }, destination);
+        var destinationDto = await destinationService.AddOrUpdateAsync(destination, tripId, cancellationToken);
+        return CreatedAtAction(nameof(GetDestination), new { tripId, id = destination.Id }, destinationDto);
     }
 
     // DELETE: api/Trips/{tripId}/destinations/{id}
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> DeleteDestination(Guid tripId, Guid id, CancellationToken cancellationToken)
     {
-        var deleted = await destinationRepository.DeleteAsync(id, cancellationToken);
+        var deleted = await destinationService.DeleteAsync(id, cancellationToken);
         return deleted ? NoContent() : NotFound();
     }
 }

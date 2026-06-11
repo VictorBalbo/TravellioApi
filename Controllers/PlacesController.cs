@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using TravellioApi.Models.Entities;
+using TravellioApi.Models.DTOs;
 using TravellioApi.Services;
 
 namespace TravellioApi.Controllers;

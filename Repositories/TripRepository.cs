@@ -1,14 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using TravellioApi.DbContexts;
 using TravellioApi.Models.Entities;
-using TravellioApi.Services;
 
 namespace TravellioApi.Repositories;
 
-public class TripRepository(AppDbContext context, IPlaceService placeService)
+public class TripRepository(AppDbContext context)
     : BaseRepository<Trip>(context), ITripRepository
 {
-    public async Task<IEnumerable<Trip>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<ICollection<Trip>> GetAllAsync(CancellationToken cancellationToken)
     {
         var trips = await DbSet.ToListAsync(cancellationToken);
         return trips;
@@ -23,48 +22,6 @@ public class TripRepository(AppDbContext context, IPlaceService placeService)
             .ThenInclude(tr => tr.Legs)
             .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
 
-        if (trip != null)
-        {
-            trip = await EnrichTripWithPlaceDetailsAsync(trip, cancellationToken);
-        }
-
-        return trip;
-    }
-
-    /// <summary>
-    /// Enrich Trip with Place Details for Destinations and Transportations.
-    /// </summary>
-    /// <param name="trip"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    private async Task<Trip> EnrichTripWithPlaceDetailsAsync(Trip trip, CancellationToken cancellationToken)
-    {
-        var getPlaceTasks = new List<Task>();
-        if (trip.Destinations?.Count > 0)
-        {
-            var destinationTasks = trip.Destinations
-                .Select(async d => d.Place = await placeService.GetPlaceDetails(d.PlaceId, cancellationToken));
-            getPlaceTasks.AddRange(destinationTasks);
-        }
-
-
-        if (trip.Transportations?.Count > 0)
-        {
-            var transportationTasks = trip.Transportations.SelectMany(t =>
-                t.Legs.Select(async s =>
-                {
-                    var originTerminalTask = placeService.GetPlaceDetails(s.DeparturePlaceId, cancellationToken);
-                    var destinationTerminalTask =
-                        placeService.GetPlaceDetails(s.ArrivalPlaceId, cancellationToken);
-                    await Task.WhenAll(originTerminalTask, destinationTerminalTask);
-                    s.DeparturePlace = await originTerminalTask;
-                    s.ArrivalPlace = await destinationTerminalTask;
-                })
-            );
-            getPlaceTasks.AddRange(transportationTasks);
-        }
-
-        await Task.WhenAll(getPlaceTasks);
         return trip;
     }
 }

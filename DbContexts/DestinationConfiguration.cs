@@ -19,7 +19,6 @@ public class DestinationConfiguration : BaseEntityConfiguration<Destination>
             .IsRequired();
         builder.Property(p => p.Notes)
             .HasMaxLength(5000);
-        builder.Ignore(x => x.Place);
 
         // Destination → Activities (1:N)
         builder

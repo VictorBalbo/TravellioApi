@@ -1,20 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
-using TravellioApi.Models.Entities;
-using TravellioApi.Repositories;
+using TravellioApi.Models.DTOs;
+using TravellioApi.Services;
 
 namespace TravellioApi.Controllers;
 
 //TODO: Add auth
 [ApiController]
 [Route("Api/[controller]")]
-public class TripsController(ITripRepository tripRepository) : ControllerBase
+public class TripsController(ITripService tripService) : ControllerBase
 {
     // GET: api/Trips
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Trip>>> GetTrips(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<TripDto>>> GetTrips(CancellationToken cancellationToken)
     {
-        var trips = await tripRepository.GetAllAsync(cancellationToken);
-        if (!trips.Any())
+        var trips = await tripService.GetAllAsync(cancellationToken);
+        if (trips.Count == 0)
             return NotFound();
 
         return Ok(trips);
@@ -22,30 +22,28 @@ public class TripsController(ITripRepository tripRepository) : ControllerBase
 
     // GET: api/Trips/1
     [HttpGet("{tripId:guid}")]
-    public async Task<ActionResult<Trip>> GetTrip(Guid tripId, CancellationToken cancellationToken)
+    public async Task<ActionResult<TripDto>> GetTrip(Guid tripId, CancellationToken cancellationToken)
     {
-        var trip = await tripRepository.GetByIdAsync(tripId, cancellationToken);
+        var trip = await tripService.GetByIdAsync(tripId, cancellationToken);
         if (trip == null)
-        {
             return NotFound();
-        }
 
-        return trip;
+        return Ok(trip);
     }
 
     // POST: api/Trips
     [HttpPost]
-    public async Task<ActionResult<Trip>> PostTrip(Trip trip, CancellationToken cancellationToken)
+    public async Task<ActionResult<TripDto>> PostTrip(TripDto trip, CancellationToken cancellationToken)
     {
-        await tripRepository.AddOrUpdateAsync(trip, cancellationToken);
-        return CreatedAtAction("GetTrip", new { tripId = trip.Id }, trip);
+        var tripDto = await tripService.AddOrUpdateAsync(trip, cancellationToken);
+        return CreatedAtAction(nameof(GetTrip), new { tripId = tripDto.Id }, tripDto);
     }
 
     // DELETE: api/Trips/1
     [HttpDelete("{tripId:guid}")]
     public async Task<ActionResult> DeleteTrip(Guid tripId, CancellationToken cancellationToken)
     {
-        var deleted = await tripRepository.DeleteAsync(tripId, cancellationToken);
+        var deleted = await tripService.DeleteAsync(tripId, cancellationToken);
         return deleted ? NoContent() : NotFound();
     }
 }

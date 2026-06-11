@@ -1,11 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using TravellioApi.DbContexts;
 using TravellioApi.Models.Entities;
-using TravellioApi.Services;
 
 namespace TravellioApi.Repositories;
 
-public class TransportationRepository(AppDbContext context, IPlaceService placeService)
+public class TransportationRepository(AppDbContext context)
     : BaseRepository<Transportation>(context), ITransportationRepository
 {
     public async Task<ICollection<Transportation>> GetAllAsync(Guid tripId, CancellationToken cancellationToken)
@@ -22,43 +21,6 @@ public class TransportationRepository(AppDbContext context, IPlaceService placeS
                 .Include(d => d.Arrival)
                 .Include(d => d.Departure)
                 .FirstOrDefaultAsync(cancellationToken);
-
-        if (transportation != null)
-        {
-            transportation = await EnrichDestinationWithPlaceDetailsAsync(transportation, cancellationToken);
-        }
-
-        return transportation;
-    }
-
-    /// <summary>
-    /// Enrich Transportation with Place Details for the Destination and Origin.
-    /// </summary>
-    /// <param name="transportation"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    private async Task<Transportation> EnrichDestinationWithPlaceDetailsAsync(Transportation transportation,
-        CancellationToken cancellationToken)
-    {
-        var getPlaceTasks = new List<Task>();
-
-        var originTask = Task.FromResult<Place?>(null);
-        var destinationTask = Task.FromResult<Place?>(null);
-        if (transportation.Arrival?.PlaceId != null)
-        {
-            originTask = placeService.GetPlaceDetails(transportation.Arrival.PlaceId, cancellationToken);
-            getPlaceTasks.Add(originTask);
-        }
-
-        if (transportation.Departure?.PlaceId != null)
-        {
-            destinationTask = placeService.GetPlaceDetails(transportation.Departure.PlaceId, cancellationToken);
-            getPlaceTasks.Add(destinationTask);
-        }
-
-        await Task.WhenAll(getPlaceTasks);
-        transportation.Arrival?.Place = await originTask;
-        transportation.Departure?.Place = await destinationTask;
 
         return transportation;
     }

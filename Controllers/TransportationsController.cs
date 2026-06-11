@@ -1,19 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
-using TravellioApi.Models.Entities;
-using TravellioApi.Repositories;
+using TravellioApi.Models.DTOs;
+using TravellioApi.Services;
 
 namespace TravellioApi.Controllers;
 
 [ApiController]
 [Route("Api/Trips/{tripId:guid}/[controller]")]
-public class TransportationsController(ITransportationRepository transportationRepository) : ControllerBase
+public class TransportationsController(ITransportationService transportationService) : ControllerBase
 {
     // GET: api/Trips/1/Transportations
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Transportation>>> GetTransportations(Guid tripId,
+    public async Task<ActionResult<IEnumerable<TransportationDto>>> GetTransportations(Guid tripId,
         CancellationToken cancellationToken)
     {
-        var transportations = await transportationRepository.GetAllAsync(tripId, cancellationToken);
+        var transportations = await transportationService.GetAllAsync(tripId, cancellationToken);
         if (transportations.Count == 0)
             return NotFound();
 
@@ -22,10 +22,10 @@ public class TransportationsController(ITransportationRepository transportationR
 
     // GET: api/Trips/{tripId}/Transportations/{id}
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<Transportation>> GetTransportations(Guid tripId, Guid id,
+    public async Task<ActionResult<TransportationDto>> GetTransportation(Guid tripId, Guid id,
         CancellationToken cancellationToken)
     {
-        var transportation = await transportationRepository.GetByIdAsync(tripId, id, cancellationToken);
+        var transportation = await transportationService.GetByIdAsync(tripId, id, cancellationToken);
         if (transportation == null)
             return NotFound();
 
@@ -34,19 +34,19 @@ public class TransportationsController(ITransportationRepository transportationR
 
     // POST: api/Trips/{tripId}/Transportations
     [HttpPost]
-    public async Task<ActionResult<Transportation>> PostTransportations(Guid tripId, Transportation transportation,
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<TransportationDto>> PostTransportation(Guid tripId,
+        TransportationDto transportation, CancellationToken cancellationToken)
     {
-        transportation.TripId = tripId;
-        await transportationRepository.AddOrUpdateAsync(transportation, cancellationToken);
-        return CreatedAtAction(nameof(GetTransportations), new { tripId, id = transportation.Id }, transportation);
+        var transportationDto = await transportationService.AddOrUpdateAsync(transportation, tripId, cancellationToken);
+        return CreatedAtAction(nameof(GetTransportation), new { tripId, id = transportation.Id },
+            transportationDto);
     }
 
     // DELETE: api/Trips/{tripId}/Transportations/{id}
     [HttpDelete("{id:guid}")]
-    public async Task<ActionResult> DeleteTransportations(Guid tripId, Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult> DeleteTransportation(Guid tripId, Guid id, CancellationToken cancellationToken)
     {
-        var deleted = await transportationRepository.DeleteAsync(id, cancellationToken);
+        var deleted = await transportationService.DeleteAsync(id, cancellationToken);
         return deleted ? NoContent() : NotFound();
     }
 }

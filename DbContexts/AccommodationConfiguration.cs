@@ -22,6 +22,5 @@ public class AccommodationConfiguration : BaseEntityConfiguration<Accommodation>
         builder.Property(p => p.Notes)
             .HasMaxLength(5000);
         builder.OwnsOne(p => p.Price, PriceConfiguration.Configure);
-        builder.Ignore(x => x.Place);
     }
 }

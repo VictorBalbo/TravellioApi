@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using TravellioApi.Models.DTOs;
 using TravellioApi.Models.Entities;
 
 namespace TravellioApi.Models.Wanderlog;
