@@ -22,7 +22,7 @@ namespace TravellioApi.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("TravellioApi.Models.Accommodation", b =>
+            modelBuilder.Entity("TravellioApi.Models.Entities.Accommodation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -37,7 +37,7 @@ namespace TravellioApi.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("check_out");
 
-                    b.Property<Guid?>("DestinationId")
+                    b.Property<Guid>("DestinationId")
                         .HasColumnType("uuid")
                         .HasColumnName("destination_id");
 
@@ -77,14 +77,14 @@ namespace TravellioApi.Migrations
                     b.ToTable("accommodations", (string)null);
                 });
 
-            modelBuilder.Entity("TravellioApi.Models.Activity", b =>
+            modelBuilder.Entity("TravellioApi.Models.Entities.Activity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid?>("DestinationId")
+                    b.Property<Guid>("DestinationId")
                         .HasColumnType("uuid")
                         .HasColumnName("destination_id");
 
@@ -131,7 +131,7 @@ namespace TravellioApi.Migrations
                     b.ToTable("activities", (string)null);
                 });
 
-            modelBuilder.Entity("TravellioApi.Models.Destination", b =>
+            modelBuilder.Entity("TravellioApi.Models.Entities.Destination", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -170,7 +170,7 @@ namespace TravellioApi.Migrations
                     b.ToTable("destinations", (string)null);
                 });
 
-            modelBuilder.Entity("TravellioApi.Models.Leg", b =>
+            modelBuilder.Entity("TravellioApi.Models.Entities.Leg", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -235,7 +235,7 @@ namespace TravellioApi.Migrations
                     b.ToTable("legs", (string)null);
                 });
 
-            modelBuilder.Entity("TravellioApi.Models.Transportation", b =>
+            modelBuilder.Entity("TravellioApi.Models.Entities.Transportation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -269,7 +269,7 @@ namespace TravellioApi.Migrations
                     b.ToTable("transportations", (string)null);
                 });
 
-            modelBuilder.Entity("TravellioApi.Models.Trip", b =>
+            modelBuilder.Entity("TravellioApi.Models.Entities.Trip", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -301,15 +301,16 @@ namespace TravellioApi.Migrations
                     b.ToTable("trips", (string)null);
                 });
 
-            modelBuilder.Entity("TravellioApi.Models.Accommodation", b =>
+            modelBuilder.Entity("TravellioApi.Models.Entities.Accommodation", b =>
                 {
-                    b.HasOne("TravellioApi.Models.Destination", null)
+                    b.HasOne("TravellioApi.Models.Entities.Destination", null)
                         .WithMany("Accommodations")
                         .HasForeignKey("DestinationId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_accommodations_destinations_destination_id");
 
-                    b.OwnsOne("TravellioApi.Models.Price", "Price", b1 =>
+                    b.OwnsOne("TravellioApi.Models.Entities.Price", "Price", b1 =>
                         {
                             b1.Property<Guid>("AccommodationId")
                                 .HasColumnType("uuid")
@@ -338,15 +339,16 @@ namespace TravellioApi.Migrations
                     b.Navigation("Price");
                 });
 
-            modelBuilder.Entity("TravellioApi.Models.Activity", b =>
+            modelBuilder.Entity("TravellioApi.Models.Entities.Activity", b =>
                 {
-                    b.HasOne("TravellioApi.Models.Destination", null)
+                    b.HasOne("TravellioApi.Models.Entities.Destination", null)
                         .WithMany("Activities")
                         .HasForeignKey("DestinationId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_activities_destinations_destination_id");
 
-                    b.OwnsOne("TravellioApi.Models.Price", "Price", b1 =>
+                    b.OwnsOne("TravellioApi.Models.Entities.Price", "Price", b1 =>
                         {
                             b1.Property<Guid>("ActivityId")
                                 .HasColumnType("uuid")
@@ -375,9 +377,9 @@ namespace TravellioApi.Migrations
                     b.Navigation("Price");
                 });
 
-            modelBuilder.Entity("TravellioApi.Models.Destination", b =>
+            modelBuilder.Entity("TravellioApi.Models.Entities.Destination", b =>
                 {
-                    b.HasOne("TravellioApi.Models.Trip", null)
+                    b.HasOne("TravellioApi.Models.Entities.Trip", null)
                         .WithMany("Destinations")
                         .HasForeignKey("TripId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -385,16 +387,16 @@ namespace TravellioApi.Migrations
                         .HasConstraintName("fk_destinations_trips_trip_id");
                 });
 
-            modelBuilder.Entity("TravellioApi.Models.Leg", b =>
+            modelBuilder.Entity("TravellioApi.Models.Entities.Leg", b =>
                 {
-                    b.HasOne("TravellioApi.Models.Transportation", null)
+                    b.HasOne("TravellioApi.Models.Entities.Transportation", null)
                         .WithMany("Legs")
                         .HasForeignKey("TransportationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_legs_transportations_transportation_id");
 
-                    b.OwnsOne("TravellioApi.Models.Price", "Price", b1 =>
+                    b.OwnsOne("TravellioApi.Models.Entities.Price", "Price", b1 =>
                         {
                             b1.Property<Guid>("LegId")
                                 .HasColumnType("uuid")
@@ -423,28 +425,28 @@ namespace TravellioApi.Migrations
                     b.Navigation("Price");
                 });
 
-            modelBuilder.Entity("TravellioApi.Models.Transportation", b =>
+            modelBuilder.Entity("TravellioApi.Models.Entities.Transportation", b =>
                 {
-                    b.HasOne("TravellioApi.Models.Destination", "Arrival")
+                    b.HasOne("TravellioApi.Models.Entities.Destination", "Arrival")
                         .WithMany()
                         .HasForeignKey("ArrivalDestinationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_transportations_destinations_arrival_destination_id");
 
-                    b.HasOne("TravellioApi.Models.Destination", "Departure")
+                    b.HasOne("TravellioApi.Models.Entities.Destination", "Departure")
                         .WithMany()
                         .HasForeignKey("DepartureDestinationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_transportations_destinations_departure_destination_id");
 
-                    b.HasOne("TravellioApi.Models.Trip", null)
+                    b.HasOne("TravellioApi.Models.Entities.Trip", null)
                         .WithMany("Transportations")
                         .HasForeignKey("TripId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_transportations_trips_trip_id");
 
-                    b.OwnsOne("TravellioApi.Models.Price", "Price", b1 =>
+                    b.OwnsOne("TravellioApi.Models.Entities.Price", "Price", b1 =>
                         {
                             b1.Property<Guid>("TransportationId")
                                 .HasColumnType("uuid")
@@ -477,19 +479,19 @@ namespace TravellioApi.Migrations
                     b.Navigation("Price");
                 });
 
-            modelBuilder.Entity("TravellioApi.Models.Destination", b =>
+            modelBuilder.Entity("TravellioApi.Models.Entities.Destination", b =>
                 {
                     b.Navigation("Accommodations");
 
                     b.Navigation("Activities");
                 });
 
-            modelBuilder.Entity("TravellioApi.Models.Transportation", b =>
+            modelBuilder.Entity("TravellioApi.Models.Entities.Transportation", b =>
                 {
                     b.Navigation("Legs");
                 });
 
-            modelBuilder.Entity("TravellioApi.Models.Trip", b =>
+            modelBuilder.Entity("TravellioApi.Models.Entities.Trip", b =>
                 {
                     b.Navigation("Destinations");
 

@@ -62,7 +62,7 @@ namespace TravellioApi.Migrations
                     notes = table.Column<string>(type: "character varying(5000)", maxLength: 5000, nullable: true),
                     price_value = table.Column<decimal>(type: "numeric(9,2)", precision: 9, scale: 2, nullable: true),
                     price_currency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: true),
-                    destination_id = table.Column<Guid>(type: "uuid", nullable: true)
+                    destination_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,7 +89,7 @@ namespace TravellioApi.Migrations
                     price_currency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: true),
                     website = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     notes = table.Column<string>(type: "character varying(5000)", maxLength: 5000, nullable: true),
-                    destination_id = table.Column<Guid>(type: "uuid", nullable: true)
+                    destination_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
