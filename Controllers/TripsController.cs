@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TravellioApi.Models.DTOs;
+using TravellioApi.Queries;
 using TravellioApi.Services;
 
 namespace TravellioApi.Controllers;
@@ -7,13 +8,13 @@ namespace TravellioApi.Controllers;
 //TODO: Add auth
 [ApiController]
 [Route("Api/[controller]")]
-public class TripsController(ITripService tripService) : ControllerBase
+public class TripsController(ITripService tripService, ITripQuery tripQuery) : ControllerBase
 {
     // GET: api/Trips
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TripDto>>> GetTrips(CancellationToken cancellationToken)
     {
-        var trips = await tripService.GetAllAsync(cancellationToken);
+        var trips = await tripQuery.GetAllAsync(cancellationToken);
         if (trips.Count == 0)
             return NotFound();
 
@@ -24,7 +25,7 @@ public class TripsController(ITripService tripService) : ControllerBase
     [HttpGet("{tripId:guid}")]
     public async Task<ActionResult<TripDto>> GetTrip(Guid tripId, CancellationToken cancellationToken)
     {
-        var trip = await tripService.GetByIdAsync(tripId, cancellationToken);
+        var trip = await tripQuery.GetByIdAsync(tripId, true, cancellationToken);
         if (trip == null)
             return NotFound();
 

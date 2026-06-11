@@ -1,19 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
 using TravellioApi.Models.DTOs;
+using TravellioApi.Queries;
 using TravellioApi.Services;
 
 namespace TravellioApi.Controllers;
 
 [ApiController]
 [Route("Api/Trips/{tripId:guid}/[controller]")]
-public class DestinationsController(IDestinationService destinationService) : ControllerBase
+public class DestinationsController(IDestinationService destinationService, IDestinationQuery destinationQuery)
+    : ControllerBase
 {
     // GET: api/Trips/1/Destinations
     [HttpGet]
     public async Task<ActionResult<IEnumerable<DestinationDto>>> GetDestinations(Guid tripId,
         CancellationToken cancellationToken)
     {
-        var destinations = await destinationService.GetAllAsync(tripId, cancellationToken);
+        var destinations = await destinationQuery.GetAllAsync(tripId, cancellationToken);
         if (destinations.Count == 0)
             return NotFound();
 
@@ -25,7 +27,7 @@ public class DestinationsController(IDestinationService destinationService) : Co
     public async Task<ActionResult<DestinationDto>> GetDestination(Guid tripId, Guid id,
         CancellationToken cancellationToken)
     {
-        var destination = await destinationService.GetByIdAsync(tripId, id, cancellationToken);
+        var destination = await destinationQuery.GetByIdAsync(tripId, id, true, cancellationToken);
         if (destination == null)
             return NotFound();
 

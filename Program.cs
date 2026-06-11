@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using StackExchange.Redis;
 using TravellioApi.DbContexts;
+using TravellioApi.Queries;
 using TravellioApi.Repositories;
 using TravellioApi.Services;
 using TravellioApi.Services.PlaceProviders;
@@ -33,8 +34,11 @@ else
 
 // Add Dependency Injection
 builder.Services.AddScoped<ITripRepository, TripRepository>();
+builder.Services.AddScoped<ITripQuery, TripQuery>();
 builder.Services.AddScoped<IDestinationRepository, DestinationRepository>();
+builder.Services.AddScoped<IDestinationQuery, DestinationQuery>();
 builder.Services.AddScoped<ITransportationRepository, TransportationRepository>();
+builder.Services.AddScoped<ITransportationQuery, TransportationQuery>();
 builder.Services.AddScoped<IPlaceService, PlaceService>();
 builder.Services.AddScoped<IPlaceProvider, WanderlogProvider>();
 builder.Services.AddScoped<ITripService, TripService>();
@@ -43,7 +47,11 @@ builder.Services.AddScoped<ITransportationService, TransportationService>();
 
 // Add Controllers
 builder.Services.AddControllers()
-    .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
 builder.Services.AddHttpClient();
 
 // Add Loggers
