@@ -7,6 +7,8 @@ public class AccommodationDto
     public Guid? Id { get; init; }
     public required string Name { get; init; }
     public required string PlaceId { get; init; }
+    public required Coordinates Coordinates { get; set; }
+    public string? Address { get; set; }
     public DateTime? CheckIn { get; init; }
     public DateTime? CheckOut { get; init; }
     public string? ImageUrl { get; init; }
@@ -25,6 +27,8 @@ public static class AccommodationMapper
             Id = dto.Id ?? Guid.Empty,
             Name = dto.Name,
             PlaceId = dto.PlaceId,
+            Coordinates =  dto.Coordinates,
+            Address = dto.Address,
             CheckIn = dto.CheckIn,
             CheckOut = dto.CheckOut,
             ImageUrl = dto.ImageUrl,
@@ -47,6 +51,8 @@ public static class AccommodationMapper
             Id = entity.Id,
             Name = entity.Name,
             PlaceId = entity.PlaceId,
+            Coordinates = entity.Coordinates,
+            Address =  entity.Address,
             CheckIn = entity.CheckIn,
             CheckOut = entity.CheckOut,
             ImageUrl = entity.ImageUrl,

@@ -4,7 +4,13 @@ public class Leg : IBaseEntity
 {
     public required Guid Id { get; set; }
     public required string DeparturePlaceId { get; set; }
+    public required string DeparturePlaceShortName { get; set; }
+    public required string DeparturePlaceDescription { get; set; }
+    public required Coordinates DeparturePlaceCoordinates { get; set; }
     public required string ArrivalPlaceId { get; set; }
+    public required string ArrivalPlaceShortName { get; set; }
+    public required string ArrivalPlaceDescription { get; set; }
+    public required Coordinates ArrivalPlaceCoordinates { get; set; }
     public TransportationType Type { get; set; }
     public DateTime? DepartureTime { get; set; }
     public DateTime? ArrivalTime { get; set; }

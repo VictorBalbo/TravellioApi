@@ -5,6 +5,8 @@ public class Accommodation : IBaseEntity
     public required Guid Id { get; set; }
     public required string Name { get; set; }
     public required string PlaceId { get; set; }
+    public required Coordinates Coordinates { get; set; }
+    public string? Address { get; set; }
     public DateTime? CheckIn { get; set; }
     public DateTime? CheckOut { get; set; }
     public string? ImageUrl { get; set; }

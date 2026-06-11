@@ -7,6 +7,8 @@ public class ActivityDto
     public Guid? Id { get; init; }
     public required string Name { get; init; }
     public required string PlaceId { get; init; }
+    public required Coordinates Coordinates { get; set; }
+    public string? Address { get; set; }
     public DateTime? ScheduledAt { get; init; }
     public bool? TicketRequired { get; init; }
     public bool? TicketPurchased { get; init; }
@@ -25,6 +27,8 @@ public static class ActivityMapper
             Id = dto.Id ?? Guid.Empty,
             Name = dto.Name,
             PlaceId = dto.PlaceId,
+            Coordinates = dto.Coordinates,
+            Address = dto.Address,
             ScheduledAt = dto.ScheduledAt,
             TicketRequired = dto.TicketRequired,
             TicketPurchased = dto.TicketPurchased,
@@ -47,6 +51,8 @@ public static class ActivityMapper
             Id = entity.Id,
             Name = entity.Name,
             PlaceId = entity.PlaceId,
+            Coordinates =  entity.Coordinates,
+            Address = entity.Address,
             ScheduledAt = entity.ScheduledAt,
             TicketRequired = entity.TicketRequired,
             TicketPurchased = entity.TicketPurchased,

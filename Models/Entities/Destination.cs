@@ -3,6 +3,8 @@ namespace TravellioApi.Models.Entities;
 public class Destination : IBaseEntity
 {
     public required Guid Id { get; set; }
+    public required string Name { get; set; }
+    public required Coordinates Coordinates { get; set; }
     public required string PlaceId { get; set; }
     public required DateOnly StartDate { get; set; }
     public required DateOnly EndDate { get; set; }

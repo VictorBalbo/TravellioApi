@@ -15,6 +15,10 @@ public class AccommodationConfiguration : BaseEntityConfiguration<Accommodation>
         builder.Property(p => p.PlaceId)
             .IsRequired()
             .HasMaxLength(Constants.PlaceIdSize);
+        builder
+            .OwnsOne(p => p.Coordinates, CoordinatesConfiguration.Configure);
+        builder.Property(p => p.Address)
+            .HasMaxLength(200);
         builder.Property(p => p.ImageUrl)
             .HasMaxLength(255);
         builder.Property(p => p.Website)

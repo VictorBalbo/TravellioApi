@@ -29,6 +29,11 @@ namespace TravellioApi.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("Address")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("address");
+
                     b.Property<DateTime?>("CheckIn")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("check_in");
@@ -83,6 +88,11 @@ namespace TravellioApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("address");
 
                     b.Property<Guid>("DestinationId")
                         .HasColumnType("uuid")
@@ -142,6 +152,12 @@ namespace TravellioApi.Migrations
                         .HasColumnType("date")
                         .HasColumnName("end_date");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
+                        .HasColumnName("name");
+
                     b.Property<string>("Notes")
                         .HasMaxLength(5000)
                         .HasColumnType("character varying(5000)")
@@ -177,11 +193,23 @@ namespace TravellioApi.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("ArrivalPlaceDescription")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("arrival_place_description");
+
                     b.Property<string>("ArrivalPlaceId")
                         .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)")
                         .HasColumnName("arrival_place_id");
+
+                    b.Property<string>("ArrivalPlaceShortName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("arrival_place_short_name");
 
                     b.Property<DateTime?>("ArrivalTime")
                         .HasColumnType("timestamp without time zone")
@@ -192,11 +220,23 @@ namespace TravellioApi.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("company");
 
+                    b.Property<string>("DeparturePlaceDescription")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("departure_place_description");
+
                     b.Property<string>("DeparturePlaceId")
                         .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)")
                         .HasColumnName("departure_place_id");
+
+                    b.Property<string>("DeparturePlaceShortName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("departure_place_short_name");
 
                     b.Property<DateTime?>("DepartureTime")
                         .HasColumnType("timestamp without time zone")
@@ -310,6 +350,31 @@ namespace TravellioApi.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_accommodations_destinations_destination_id");
 
+                    b.OwnsOne("TravellioApi.Models.Entities.Coordinates", "Coordinates", b1 =>
+                        {
+                            b1.Property<Guid>("AccommodationId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<decimal>("Lat")
+                                .HasPrecision(8, 6)
+                                .HasColumnType("numeric(8,6)")
+                                .HasColumnName("coordinates_lat");
+
+                            b1.Property<decimal>("Lng")
+                                .HasPrecision(9, 6)
+                                .HasColumnType("numeric(9,6)")
+                                .HasColumnName("coordinates_lng");
+
+                            b1.HasKey("AccommodationId");
+
+                            b1.ToTable("accommodations");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AccommodationId")
+                                .HasConstraintName("fk_accommodations_accommodations_id");
+                        });
+
                     b.OwnsOne("TravellioApi.Models.Entities.Price", "Price", b1 =>
                         {
                             b1.Property<Guid>("AccommodationId")
@@ -336,6 +401,9 @@ namespace TravellioApi.Migrations
                                 .HasConstraintName("fk_accommodations_accommodations_id");
                         });
 
+                    b.Navigation("Coordinates")
+                        .IsRequired();
+
                     b.Navigation("Price");
                 });
 
@@ -347,6 +415,31 @@ namespace TravellioApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_activities_destinations_destination_id");
+
+                    b.OwnsOne("TravellioApi.Models.Entities.Coordinates", "Coordinates", b1 =>
+                        {
+                            b1.Property<Guid>("ActivityId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<decimal>("Lat")
+                                .HasPrecision(8, 6)
+                                .HasColumnType("numeric(8,6)")
+                                .HasColumnName("coordinates_lat");
+
+                            b1.Property<decimal>("Lng")
+                                .HasPrecision(9, 6)
+                                .HasColumnType("numeric(9,6)")
+                                .HasColumnName("coordinates_lng");
+
+                            b1.HasKey("ActivityId");
+
+                            b1.ToTable("activities");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ActivityId")
+                                .HasConstraintName("fk_activities_activities_id");
+                        });
 
                     b.OwnsOne("TravellioApi.Models.Entities.Price", "Price", b1 =>
                         {
@@ -374,6 +467,9 @@ namespace TravellioApi.Migrations
                                 .HasConstraintName("fk_activities_activities_id");
                         });
 
+                    b.Navigation("Coordinates")
+                        .IsRequired();
+
                     b.Navigation("Price");
                 });
 
@@ -385,6 +481,34 @@ namespace TravellioApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_destinations_trips_trip_id");
+
+                    b.OwnsOne("TravellioApi.Models.Entities.Coordinates", "Coordinates", b1 =>
+                        {
+                            b1.Property<Guid>("DestinationId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<decimal>("Lat")
+                                .HasPrecision(8, 6)
+                                .HasColumnType("numeric(8,6)")
+                                .HasColumnName("coordinates_lat");
+
+                            b1.Property<decimal>("Lng")
+                                .HasPrecision(9, 6)
+                                .HasColumnType("numeric(9,6)")
+                                .HasColumnName("coordinates_lng");
+
+                            b1.HasKey("DestinationId");
+
+                            b1.ToTable("destinations");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DestinationId")
+                                .HasConstraintName("fk_destinations_destinations_id");
+                        });
+
+                    b.Navigation("Coordinates")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TravellioApi.Models.Entities.Leg", b =>
@@ -395,6 +519,56 @@ namespace TravellioApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_legs_transportations_transportation_id");
+
+                    b.OwnsOne("TravellioApi.Models.Entities.Coordinates", "ArrivalPlaceCoordinates", b1 =>
+                        {
+                            b1.Property<Guid>("LegId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<decimal>("Lat")
+                                .HasPrecision(8, 6)
+                                .HasColumnType("numeric(8,6)")
+                                .HasColumnName("arrival_place_coordinates_lat");
+
+                            b1.Property<decimal>("Lng")
+                                .HasPrecision(9, 6)
+                                .HasColumnType("numeric(9,6)")
+                                .HasColumnName("arrival_place_coordinates_lng");
+
+                            b1.HasKey("LegId");
+
+                            b1.ToTable("legs");
+
+                            b1.WithOwner()
+                                .HasForeignKey("LegId")
+                                .HasConstraintName("fk_legs_legs_id");
+                        });
+
+                    b.OwnsOne("TravellioApi.Models.Entities.Coordinates", "DeparturePlaceCoordinates", b1 =>
+                        {
+                            b1.Property<Guid>("LegId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<decimal>("Lat")
+                                .HasPrecision(8, 6)
+                                .HasColumnType("numeric(8,6)")
+                                .HasColumnName("departure_place_coordinates_lat");
+
+                            b1.Property<decimal>("Lng")
+                                .HasPrecision(9, 6)
+                                .HasColumnType("numeric(9,6)")
+                                .HasColumnName("departure_place_coordinates_lng");
+
+                            b1.HasKey("LegId");
+
+                            b1.ToTable("legs");
+
+                            b1.WithOwner()
+                                .HasForeignKey("LegId")
+                                .HasConstraintName("fk_legs_legs_id");
+                        });
 
                     b.OwnsOne("TravellioApi.Models.Entities.Price", "Price", b1 =>
                         {
@@ -421,6 +595,12 @@ namespace TravellioApi.Migrations
                                 .HasForeignKey("LegId")
                                 .HasConstraintName("fk_legs_legs_id");
                         });
+
+                    b.Navigation("ArrivalPlaceCoordinates")
+                        .IsRequired();
+
+                    b.Navigation("DeparturePlaceCoordinates")
+                        .IsRequired();
 
                     b.Navigation("Price");
                 });

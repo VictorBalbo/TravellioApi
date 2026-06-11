@@ -13,6 +13,11 @@ public class DestinationConfiguration : BaseEntityConfiguration<Destination>
         builder.Property(p => p.PlaceId)
             .IsRequired()
             .HasMaxLength(Constants.PlaceIdSize);
+        builder.Property(p => p.Name)
+            .IsRequired()
+            .HasMaxLength(60);
+        builder
+            .OwnsOne(p => p.Coordinates, CoordinatesConfiguration.Configure);
         builder.Property(p => p.StartDate)
             .IsRequired();
         builder.Property(p => p.EndDate)

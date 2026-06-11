@@ -6,7 +6,13 @@ public class LegDto
 {
     public Guid? Id { get; init; }
     public required string DeparturePlaceId { get; init; }
+    public required string DeparturePlaceShortName { get; init; }
+    public required string DeparturePlaceDescription { get; init; }
+    public required Coordinates DeparturePlaceCoordinates { get; init; }
     public required string ArrivalPlaceId { get; init; }
+    public required string ArrivalPlaceShortName { get; init; }
+    public required string ArrivalPlaceDescription { get; init; }
+    public required Coordinates ArrivalPlaceCoordinates { get; init; }
     public TransportationType Type { get; init; }
     public DateTime? DepartureTime { get; init; }
     public DateTime? ArrivalTime { get; init; }
@@ -27,7 +33,13 @@ public static class LegMapper
         {
             Id = dto.Id ?? Guid.Empty,
             DeparturePlaceId = dto.DeparturePlaceId,
+            DeparturePlaceShortName = dto.DeparturePlaceShortName,
+            DeparturePlaceDescription = dto.DeparturePlaceDescription,
+            DeparturePlaceCoordinates = dto.DeparturePlaceCoordinates,
             ArrivalPlaceId = dto.ArrivalPlaceId,
+            ArrivalPlaceShortName = dto.ArrivalPlaceShortName,
+            ArrivalPlaceDescription = dto.ArrivalPlaceDescription,
+            ArrivalPlaceCoordinates = dto.ArrivalPlaceCoordinates,
             Type = dto.Type,
             DepartureTime = dto.DepartureTime,
             ArrivalTime = dto.ArrivalTime,
@@ -51,7 +63,13 @@ public static class LegMapper
         {
             Id = entity.Id,
             DeparturePlaceId = entity.DeparturePlaceId,
+            DeparturePlaceShortName = entity.DeparturePlaceShortName,
+            DeparturePlaceDescription = entity.DeparturePlaceDescription,
+            DeparturePlaceCoordinates = entity.DeparturePlaceCoordinates,
             ArrivalPlaceId = entity.ArrivalPlaceId,
+            ArrivalPlaceShortName = entity.ArrivalPlaceShortName,
+            ArrivalPlaceDescription = entity.ArrivalPlaceDescription,
+            ArrivalPlaceCoordinates = entity.ArrivalPlaceCoordinates,
             Type = entity.Type,
             DepartureTime = entity.DepartureTime,
             ArrivalTime = entity.ArrivalTime,
