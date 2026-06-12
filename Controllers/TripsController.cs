@@ -10,7 +10,7 @@ namespace TravellioApi.Controllers;
 [Route("Api/[controller]")]
 public class TripsController(ITripService tripService, ITripQuery tripQuery) : ControllerBase
 {
-    // GET: api/Trips
+    // GET: Api/Trips
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TripDto>>> GetTrips(CancellationToken cancellationToken)
     {
@@ -21,7 +21,7 @@ public class TripsController(ITripService tripService, ITripQuery tripQuery) : C
         return Ok(trips);
     }
 
-    // GET: api/Trips/1
+    // GET: Api/Trips/1
     [HttpGet("{tripId:guid}")]
     public async Task<ActionResult<TripDto>> GetTrip(Guid tripId, CancellationToken cancellationToken)
     {
@@ -32,7 +32,7 @@ public class TripsController(ITripService tripService, ITripQuery tripQuery) : C
         return Ok(trip);
     }
 
-    // POST: api/Trips
+    // POST: Api/Trips
     [HttpPost]
     public async Task<ActionResult<TripDto>> PostTrip(TripDto trip, CancellationToken cancellationToken)
     {
@@ -40,7 +40,7 @@ public class TripsController(ITripService tripService, ITripQuery tripQuery) : C
         return CreatedAtAction(nameof(GetTrip), new { tripId = tripDto.Id }, tripDto);
     }
 
-    // DELETE: api/Trips/1
+    // DELETE: Api/Trips/1
     [HttpDelete("{tripId:guid}")]
     public async Task<ActionResult> DeleteTrip(Guid tripId, CancellationToken cancellationToken)
     {

@@ -11,7 +11,7 @@ public class TransportationsController(
     ITransportationService transportationService,
     ITransportationQuery transportationQuery) : ControllerBase
 {
-    // GET: api/Trips/1/Transportations
+    // GET: Api/Trips/1/Transportations
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TransportationDto>>> GetTransportations(Guid tripId,
         CancellationToken cancellationToken)
@@ -23,7 +23,7 @@ public class TransportationsController(
         return Ok(transportations);
     }
 
-    // GET: api/Trips/{tripId}/Transportations/{id}
+    // GET: Api/Trips/{tripId}/Transportations/{id}
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<TransportationDto>> GetTransportation(Guid tripId, Guid id,
         CancellationToken cancellationToken)
@@ -35,17 +35,17 @@ public class TransportationsController(
         return Ok(transportation);
     }
 
-    // POST: api/Trips/{tripId}/Transportations
+    // POST: Api/Trips/{tripId}/Transportations
     [HttpPost]
     public async Task<ActionResult<TransportationDto>> PostTransportation(Guid tripId,
         TransportationDto transportation, CancellationToken cancellationToken)
     {
         var transportationDto = await transportationService.AddOrUpdateAsync(transportation, tripId, cancellationToken);
-        return CreatedAtAction(nameof(GetTransportation), new { tripId, id = transportation.Id },
+        return CreatedAtAction(nameof(GetTransportation), new { tripId, id = transportationDto.Id },
             transportationDto);
     }
 
-    // DELETE: api/Trips/{tripId}/Transportations/{id}
+    // DELETE: Api/Trips/{tripId}/Transportations/{id}
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> DeleteTransportation(Guid tripId, Guid id, CancellationToken cancellationToken)
     {

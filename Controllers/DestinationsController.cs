@@ -10,7 +10,7 @@ namespace TravellioApi.Controllers;
 public class DestinationsController(IDestinationService destinationService, IDestinationQuery destinationQuery)
     : ControllerBase
 {
-    // GET: api/Trips/1/Destinations
+    // GET: Api/Trips/1/Destinations
     [HttpGet]
     public async Task<ActionResult<IEnumerable<DestinationDto>>> GetDestinations(Guid tripId,
         CancellationToken cancellationToken)
@@ -22,7 +22,7 @@ public class DestinationsController(IDestinationService destinationService, IDes
         return Ok(destinations);
     }
 
-    // GET: api/Trips/{tripId}/Destinations/{id}
+    // GET: Api/Trips/{tripId}/Destinations/{id}
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<DestinationDto>> GetDestination(Guid tripId, Guid id,
         CancellationToken cancellationToken)
@@ -34,16 +34,16 @@ public class DestinationsController(IDestinationService destinationService, IDes
         return Ok(destination);
     }
 
-    // POST: api/Trips/{tripId}/destinations
+    // POST: Api/Trips/{tripId}/destinations
     [HttpPost]
     public async Task<ActionResult<DestinationDto>> PostDestination(Guid tripId, DestinationDto destination,
         CancellationToken cancellationToken)
     {
         var destinationDto = await destinationService.AddOrUpdateAsync(destination, tripId, cancellationToken);
-        return CreatedAtAction(nameof(GetDestination), new { tripId, id = destination.Id }, destinationDto);
+        return CreatedAtAction(nameof(GetDestination), new { tripId, id = destinationDto.Id }, destinationDto);
     }
 
-    // DELETE: api/Trips/{tripId}/destinations/{id}
+    // DELETE: Api/Trips/{tripId}/destinations/{id}
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> DeleteDestination(Guid tripId, Guid id, CancellationToken cancellationToken)
     {

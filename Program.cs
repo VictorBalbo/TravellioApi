@@ -39,11 +39,17 @@ builder.Services.AddScoped<IDestinationRepository, DestinationRepository>();
 builder.Services.AddScoped<IDestinationQuery, DestinationQuery>();
 builder.Services.AddScoped<ITransportationRepository, TransportationRepository>();
 builder.Services.AddScoped<ITransportationQuery, TransportationQuery>();
+builder.Services.AddScoped<IActivityRepository, ActivityRepository>();
+builder.Services.AddScoped<IActivityQuery, ActivityQuery>();
+builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
+builder.Services.AddScoped<IAccommodationQuery, AccommodationQuery>();
 builder.Services.AddScoped<IPlaceService, PlaceService>();
 builder.Services.AddScoped<IPlaceProvider, WanderlogProvider>();
 builder.Services.AddScoped<ITripService, TripService>();
 builder.Services.AddScoped<IDestinationService, DestinationService>();
 builder.Services.AddScoped<ITransportationService, TransportationService>();
+builder.Services.AddScoped<IActivityService, ActivityService>();
+builder.Services.AddScoped<IAccommodationService, AccommodationService>();
 
 // Add Controllers
 builder.Services.AddControllers()
