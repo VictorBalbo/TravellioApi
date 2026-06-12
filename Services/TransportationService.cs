@@ -1,11 +1,9 @@
 using TravellioApi.Models.DTOs;
-using TravellioApi.Models.Entities;
 using TravellioApi.Repositories;
 
 namespace TravellioApi.Services;
 
-public class TransportationService(ITransportationRepository transportationRepository, IPlaceService placeService)
-    : ITransportationService
+public class TransportationService(ITransportationRepository transportationRepository) : ITransportationService
 {
     public async Task<TransportationDto> AddOrUpdateAsync(TransportationDto dto, Guid tripId,
         CancellationToken cancellationToken)

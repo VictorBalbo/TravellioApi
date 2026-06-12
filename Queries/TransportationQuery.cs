@@ -42,6 +42,7 @@ public class TransportationQuery(AppDbContext context, IPlaceService placeServic
                     Seat = l.Seat,
                 }).ToList(),
             })
+            .AsSplitQuery()
             .ToListAsync(cancellationToken);
     }
 
@@ -97,6 +98,7 @@ public class TransportationQuery(AppDbContext context, IPlaceService placeServic
                     Notes = tr.Departure.Notes,
                 },
             })
+            .AsSplitQuery()
             .FirstOrDefaultAsync(cancellationToken);
 
         if (transportation != null && enrichPlaces)

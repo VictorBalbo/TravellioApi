@@ -76,6 +76,7 @@ public class DestinationQuery(AppDbContext context, IPlaceService placeService) 
                     Price = a.Price == null ? null : new PriceDto(a.Price.Value, a.Price.Currency),
                 }).ToList(),
             })
+            .AsSplitQuery()
             .FirstOrDefaultAsync(cancellationToken);
 
         if (destination != null && enrichPlaces)

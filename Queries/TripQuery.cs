@@ -78,6 +78,7 @@ public class TripQuery(AppDbContext context, IPlaceService placeService) : ITrip
                     }).ToList(),
                 }).ToList(),
             })
+            .AsSplitQuery()
             .FirstOrDefaultAsync(cancellationToken);
 
         if (trip != null && enrichPlaces)
