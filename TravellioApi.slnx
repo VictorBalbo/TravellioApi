@@ -1,3 +1,6 @@
 <Solution>
-  <Project Path="TravellioApi.csproj" />
+  <Project Path="Travellio.Airports\Travellio.Airports.csproj" />
+  <Project Path="Travellio.Api\Travellio.Api.csproj" />
+  <Project Path="Travellio.Domain/Travellio.Domain.csproj" />
+  <Project Path="Travellio.Infrastructure/Travellio.Infrastructure.csproj" />
 </Solution>
