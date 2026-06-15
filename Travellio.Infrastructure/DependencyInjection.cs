@@ -19,7 +19,7 @@ public static class DependencyInjection
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-            var sqlConnectionString = configuration.GetConnectionString("SqlConnectionString");
+            var sqlConnectionString = configuration.GetConnectionString("Sql");
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(sqlConnectionString).UseSnakeCaseNamingConvention());
 
@@ -28,7 +28,7 @@ public static class DependencyInjection
 
         public IServiceCollection AddRedisInfrastructure(IConfiguration configuration)
         {
-            var redisConnectionString = configuration.GetConnectionString("RedisConnectionString");
+            var redisConnectionString = configuration.GetConnectionString("Redis");
             if (!string.IsNullOrEmpty(redisConnectionString))
             {
                 services.AddSingleton<IConnectionMultiplexer>(_ =>

@@ -1,16 +1,15 @@
-using Microsoft.EntityFrameworkCore;
 using Travellio.Airports.Services;
-using Travellio.Infrastructure.DbContexts;
+using Travellio.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
 builder.Services.AddOpenApi();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options
-        .UseNpgsql(builder.Configuration.GetConnectionString("SqlConnectionString"))
-        .UseSnakeCaseNamingConvention());
+// Add Database connections
+builder.Services.AddDatabaseInfrastructure(builder.Configuration);
 
+// Add Dependency Injection
 builder.Services.AddScoped<AirportImporter>();
 
 var app = builder.Build();
