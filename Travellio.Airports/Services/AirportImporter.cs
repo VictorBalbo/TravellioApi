@@ -66,9 +66,9 @@ file sealed class AirportCsvRecord
 {
     [Name("name")] public string Name { get; init; } = "";
 
-    [Name("latitude_deg")] public double LatitudeDeg { get; init; }
+    [Name("latitude_deg")] public decimal LatitudeDeg { get; init; }
 
-    [Name("longitude_deg")] public double LongitudeDeg { get; init; }
+    [Name("longitude_deg")] public decimal LongitudeDeg { get; init; }
 
     [Name("iso_country")] public string IsoCountry { get; init; } = "";
 

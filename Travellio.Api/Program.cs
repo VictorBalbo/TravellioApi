@@ -39,6 +39,7 @@ builder.Services.AddScoped<IActivityRepository, ActivityRepository>();
 builder.Services.AddScoped<IActivityQuery, ActivityQuery>();
 builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
 builder.Services.AddScoped<IAccommodationQuery, AccommodationQuery>();
+builder.Services.AddScoped<IAirportRepository, AirportRepository>();
 builder.Services.AddScoped<IPlaceService, PlaceService>();
 builder.Services.AddScoped<IPlaceProvider, WanderlogProvider>();
 builder.Services.AddScoped<ITripService, TripService>();
