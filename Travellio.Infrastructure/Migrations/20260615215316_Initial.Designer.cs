@@ -12,7 +12,7 @@ using Travellio.Infrastructure.DbContexts;
 namespace Travellio.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260615172232_Initial")]
+    [Migration("20260615215316_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -38,11 +38,11 @@ namespace Travellio.Infrastructure.Migrations
                         .HasColumnName("address");
 
                     b.Property<DateTime?>("CheckIn")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("check_in");
 
                     b.Property<DateTime?>("CheckOut")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("check_out");
 
                     b.Property<Guid>("DestinationId")
@@ -119,7 +119,7 @@ namespace Travellio.Infrastructure.Migrations
                         .HasColumnName("place_id");
 
                     b.Property<DateTime?>("ScheduledAt")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("scheduled_at");
 
                     b.Property<bool?>("TicketPurchased")
@@ -162,12 +162,12 @@ namespace Travellio.Infrastructure.Migrations
                         .HasColumnType("character varying(2)")
                         .HasColumnName("country_code");
 
-                    b.Property<double>("Lat")
-                        .HasColumnType("double precision")
+                    b.Property<decimal>("Lat")
+                        .HasColumnType("numeric")
                         .HasColumnName("lat");
 
-                    b.Property<double>("Lng")
-                        .HasColumnType("double precision")
+                    b.Property<decimal>("Lng")
+                        .HasColumnType("numeric")
                         .HasColumnName("lng");
 
                     b.Property<string>("Name")
@@ -253,7 +253,7 @@ namespace Travellio.Infrastructure.Migrations
                         .HasColumnName("arrival_place_short_name");
 
                     b.Property<DateTime?>("ArrivalTime")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("arrival_time");
 
                     b.Property<string>("Company")
@@ -280,7 +280,7 @@ namespace Travellio.Infrastructure.Migrations
                         .HasColumnName("departure_place_short_name");
 
                     b.Property<DateTime?>("DepartureTime")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("departure_time");
 
                     b.Property<string>("Reservation")
