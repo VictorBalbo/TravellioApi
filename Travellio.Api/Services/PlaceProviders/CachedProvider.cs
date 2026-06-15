@@ -4,7 +4,7 @@ using Travellio.Domain.DTOs;
 
 namespace Travellio.Api.Services.PlaceProviders;
 
-public class InternalProvider(IConnectionMultiplexer redis, ILogger<InternalProvider> logger) : ICachedPlaceProvider
+public class CachedProvider(IConnectionMultiplexer redis, ILogger<CachedProvider> logger) : ICachedPlaceProvider
 {
     private readonly IDatabase _redis = redis.GetDatabase();
     private readonly TimeSpan _maxWaitTime = TimeSpan.FromSeconds(3);

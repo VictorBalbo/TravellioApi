@@ -15,16 +15,6 @@ public static class DependencyInjection
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection AddInfrastructure(IConfiguration configuration)
-        {
-            services
-                .AddDatabaseInfrastructure(configuration)
-                .AddRedisInfrastructure(configuration);
-
-
-            return services;
-        }
-
         public IServiceCollection AddDatabaseInfrastructure(IConfiguration configuration)
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);

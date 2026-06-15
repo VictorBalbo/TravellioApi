@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using StackExchange.Redis;
 using Travellio.Api.Queries;
 using Travellio.Api.Repositories;
 using Travellio.Api.Services;
@@ -16,7 +17,18 @@ builder.Services.AddDatabaseInfrastructure(builder.Configuration);
 builder.Services.AddRedisInfrastructure(builder.Configuration);
 
 // Add Dependency Injection
-builder.Services.AddScoped<ICachedPlaceProvider, InternalProvider>();
+builder.Services.AddScoped<ICachedPlaceProvider>(sp =>
+{
+    var redis = sp.GetService<IConnectionMultiplexer>();
+    var logger = sp.GetRequiredService<ILogger<CachedProvider>>();
+
+    if (redis is null)
+    {
+        return new NoCacheProvider();
+    }
+
+    return new CachedProvider(redis, logger);
+});
 builder.Services.AddScoped<ITripRepository, TripRepository>();
 builder.Services.AddScoped<ITripQuery, TripQuery>();
 builder.Services.AddScoped<IDestinationRepository, DestinationRepository>();

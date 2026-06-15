@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Travellio.Domain.Entities;
 
-namespace Travellio.Airports.DbContexts;
+namespace Travellio.Infrastructure.DbContexts;
 
 public class AirportConfiguration : IEntityTypeConfiguration<Airport>
 {

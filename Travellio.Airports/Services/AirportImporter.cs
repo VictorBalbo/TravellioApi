@@ -64,17 +64,17 @@ public class AirportImporter(AppDbContext dbContext, ILogger<AirportImporter> lo
 
 file sealed class AirportCsvRecord
 {
-    [Name("name")] public string Name { get; set; } = "";
+    [Name("name")] public string Name { get; init; } = "";
 
-    [Name("latitude_deg")] public double LatitudeDeg { get; set; }
+    [Name("latitude_deg")] public double LatitudeDeg { get; init; }
 
-    [Name("longitude_deg")] public double LongitudeDeg { get; set; }
+    [Name("longitude_deg")] public double LongitudeDeg { get; init; }
 
-    [Name("iso_country")] public string IsoCountry { get; set; } = "";
+    [Name("iso_country")] public string IsoCountry { get; init; } = "";
 
-    [Name("municipality")] public string Municipality { get; set; } = "";
+    [Name("municipality")] public string Municipality { get; init; } = "";
 
-    [Name("icao_code")] public string IcaoCode { get; set; } = "";
+    [Name("icao_code")] public string IcaoCode { get; init; } = "";
 
-    [Name("iata_code")] public string IataCode { get; set; } = "";
+    [Name("iata_code")] public string IataCode { get; init; } = "";
 }
