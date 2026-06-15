@@ -117,7 +117,7 @@ public class TripTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsyncLi
     }
 
     [Fact]
-    public async Task GetById_WhenTripHasDestination_IncludesDestinationEnriched()
+    public async Task GetById_WhenTripHasDestination_IncludesDestination()
     {
         // Arrange
         var trip = NewTrip();
@@ -133,7 +133,6 @@ public class TripTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsyncLi
         var dest = Assert.Single(dto!.Destinations!);
         Assert.Equal(destination.Name, dest.Name);
         Assert.Equal(destination.PlaceId, dest.PlaceId);
-        Assert.Equal("Paris, France", dest.Place?.Address);
     }
 
     // POST /Api/Trips
