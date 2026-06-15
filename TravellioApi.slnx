@@ -3,4 +3,6 @@
   <Project Path="Travellio.Api\Travellio.Api.csproj" />
   <Project Path="Travellio.Domain/Travellio.Domain.csproj" />
   <Project Path="Travellio.Infrastructure/Travellio.Infrastructure.csproj" />
+  <Project Path="Travellio.IntegrationTests/Travellio.IntegrationTests.csproj" />
+  <Project Path="Travellio.UnitTests\Travellio.UnitTests.csproj" />
 </Solution>
