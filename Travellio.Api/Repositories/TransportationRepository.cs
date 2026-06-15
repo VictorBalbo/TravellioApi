@@ -24,4 +24,25 @@ public class TransportationRepository(AppDbContext context)
 
         return transportation;
     }
+
+    public override async Task AddOrUpdateAsync(Transportation entity, CancellationToken cancellationToken)
+    {
+        var existing = await DbSet
+            .Include(t => t.Legs)
+            .FirstOrDefaultAsync(t => t.Id == entity.Id, cancellationToken);
+
+        if (existing is null)
+        {
+            await DbSet.AddAsync(entity, cancellationToken);
+        }
+        else
+        {
+            Context.Entry(existing).CurrentValues.SetValues(entity);
+            Context.Set<Leg>().RemoveRange(existing.Legs);
+            foreach (var leg in entity.Legs)
+                existing.Legs.Add(leg);
+        }
+
+        await Context.SaveChangesAsync(cancellationToken);
+    }
 }
