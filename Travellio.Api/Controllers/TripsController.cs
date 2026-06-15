@@ -25,7 +25,7 @@ public class TripsController(ITripService tripService, ITripQuery tripQuery) : C
     [HttpGet("{tripId:guid}")]
     public async Task<ActionResult<TripDto>> GetTrip(Guid tripId, CancellationToken cancellationToken)
     {
-        var trip = await tripQuery.GetByIdAsync(tripId, true, cancellationToken);
+        var trip = await tripQuery.GetByIdAsync(tripId, false, cancellationToken);
         if (trip == null)
             return NotFound();
 

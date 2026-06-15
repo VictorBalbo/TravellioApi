@@ -49,7 +49,7 @@ public class TripQuery(AppDbContext context, IPlaceService placeService) : ITrip
                     Notes = d.Notes,
                     ActivitiesCount = d.Activities!.Count,
                     AccommodationsCount = d.Accommodations!.Count,
-                }).ToList(),
+                }).OrderBy(d => d.StartDate).ToList(),
                 Transportations = t.Transportations!.Select(tr => new TransportationDto
                 {
                     Id = tr.Id,
