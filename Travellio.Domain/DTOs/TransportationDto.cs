@@ -13,6 +13,7 @@ public class TransportationDto
     public DateTime? ArrivalTime => Legs.OrderBy(l => l.DepartureTime).LastOrDefault()?.ArrivalTime;
     public DestinationDto? Arrival { get; init; }
     public DestinationDto? Departure { get; init; }
+    public Guid? TripId { get; init; }
 }
 
 public static class TransportationMapper
@@ -53,6 +54,7 @@ public static class TransportationMapper
             DepartureDestinationId = entity.DepartureDestinationId,
             Arrival = entity.Arrival?.ToDto(),
             Departure = entity.Departure?.ToDto(),
+            TripId = entity.TripId,
         };
     }
 

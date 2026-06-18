@@ -15,6 +15,7 @@ public class AccommodationDto
     public string? Website { get; init; }
     public string? Notes { get; init; }
     public PriceDto? Price { get; init; }
+    public Guid? DestinationId { get; init; }
     public Place? Place { get; set; }
 }
 
@@ -59,6 +60,7 @@ public static class AccommodationMapper
             Website = entity.Website,
             Notes = entity.Notes,
             Price = entity.Price?.ToDto(),
+            DestinationId = entity.DestinationId,
         };
     }
 

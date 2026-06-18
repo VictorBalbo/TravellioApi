@@ -16,6 +16,7 @@ public class DestinationDto
     public ICollection<AccommodationDto>? Accommodations { get; init; }
     public int? ActivitiesCount { get; init; }
     public ICollection<ActivityDto>? Activities { get; init; }
+    public Guid? TripId { get; init; }
 }
 
 public static class DestinationMapper
@@ -57,6 +58,7 @@ public static class DestinationMapper
             AccommodationsCount =  entity.Accommodations?.Count,
             Activities = entity.Activities?.ToDto(),
             ActivitiesCount = entity.Activities?.Count,
+            TripId = entity.TripId,
         };
     }
 

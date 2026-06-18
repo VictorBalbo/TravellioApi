@@ -16,6 +16,7 @@ public class ActivityDto
     public string? Website { get; init; }
     public string? Notes { get; init; }
     public Place? Place { get; set; }
+    public Guid? DestinationId { get; init; }
 }
 
 public static class ActivityMapper
@@ -59,6 +60,7 @@ public static class ActivityMapper
             Price = entity.Price?.ToDto(),
             Website = entity.Website,
             Notes = entity.Notes,
+            DestinationId = entity.DestinationId,
         };
     }
 
