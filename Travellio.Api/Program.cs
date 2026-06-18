@@ -1,5 +1,7 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using StackExchange.Redis;
+using Travellio.Api.Converters;
 using Travellio.Api.Queries;
 using Travellio.Api.Repositories;
 using Travellio.Api.Services;
@@ -53,6 +55,7 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        options.JsonSerializerOptions.Converters.Add(new JsonDateTimeConverter());
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
 builder.Services.AddHttpClient();
@@ -62,7 +65,6 @@ builder.Host.AddSerilog();
 
 // Build
 var app = builder.Build();
-
 app.AddRequestLogging();
 
 // Configure the HTTP request pipeline.
