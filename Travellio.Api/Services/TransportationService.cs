@@ -9,6 +9,7 @@ public class TransportationService(
     IAirportRepository airportRepository) : ITransportationService
 {
     private const int IataCodeLength = 3;
+
     public async Task<TransportationDto> AddOrUpdateAsync(TransportationDto dto, Guid tripId,
         CancellationToken cancellationToken)
     {
@@ -18,8 +19,7 @@ public class TransportationService(
         {
             if (leg.DeparturePlaceShortName.Length > IataCodeLength)
             {
-                var departure = await airportRepository.GetIataCodeByCoordinatesAsync(leg.DeparturePlaceCoordinates.Lat,
-                    leg.DeparturePlaceCoordinates.Lng);
+                var departure = await airportRepository.GetIataCodeByCoordinatesAsync(leg.DeparturePlaceCoordinates);
                 if (departure is not null)
                 {
                     leg.DeparturePlaceShortName = departure;
@@ -28,8 +28,7 @@ public class TransportationService(
 
             if (leg.ArrivalPlaceShortName.Length > IataCodeLength)
             {
-                var arrival = await airportRepository.GetIataCodeByCoordinatesAsync(
-                    leg.ArrivalPlaceCoordinates.Lat, leg.ArrivalPlaceCoordinates.Lng);
+                var arrival = await airportRepository.GetIataCodeByCoordinatesAsync(leg.ArrivalPlaceCoordinates);
                 if (arrival is not null)
                 {
                     leg.ArrivalPlaceShortName = arrival;

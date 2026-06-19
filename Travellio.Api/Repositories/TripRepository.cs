@@ -4,8 +4,7 @@ using Travellio.Infrastructure.DbContexts;
 
 namespace Travellio.Api.Repositories;
 
-public class TripRepository(AppDbContext context)
-    : BaseRepository<Trip>(context), ITripRepository
+public class TripRepository(AppDbContext context) : BaseRepository<Trip>(context), ITripRepository
 {
     public async Task<ICollection<Trip>> GetAllAsync(CancellationToken cancellationToken)
     {

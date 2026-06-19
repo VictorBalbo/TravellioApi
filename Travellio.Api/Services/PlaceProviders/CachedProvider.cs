@@ -14,8 +14,8 @@ public class CachedProvider(IConnectionMultiplexer redis, ILogger<CachedProvider
     private const int PlaceJitterMaxHours = 168; // 7 days
 
     private const string AutoCompleteKeyPrefix = "autocomplete";
-    private readonly TimeSpan _autoCompleteDefaultTtl = TimeSpan.FromMinutes(30);
-    private const int AutoCompleteJitterMaxMins = 30; // 7 days
+    private readonly TimeSpan _autoCompleteDefaultTtl = TimeSpan.FromMinutes(60);
+    private const int AutoCompleteJitterMaxMins = 60; // 1 hour
 
 
     public async Task<Place?> GetPlaceDetailsAsync(string placeId, CancellationToken cancellationToken)

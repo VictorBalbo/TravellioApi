@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using StackExchange.Redis;
 using Travellio.Api.Converters;
+using Travellio.Api.Middleware;
 using Travellio.Api.Queries;
 using Travellio.Api.Repositories;
 using Travellio.Api.Services;
@@ -65,6 +66,7 @@ builder.Host.AddSerilog();
 
 // Build
 var app = builder.Build();
+app.UseMiddleware<ExceptionMiddleware>();
 app.AddRequestLogging();
 
 // Configure the HTTP request pipeline.

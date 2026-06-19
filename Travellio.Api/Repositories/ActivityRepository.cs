@@ -4,8 +4,7 @@ using Travellio.Infrastructure.DbContexts;
 
 namespace Travellio.Api.Repositories;
 
-public class ActivityRepository(AppDbContext context)
-    : BaseRepository<Activity>(context), IActivityRepository
+public class ActivityRepository(AppDbContext context) : BaseRepository<Activity>(context), IActivityRepository
 {
     public async Task<ICollection<Activity>> GetAllAsync(Guid destinationId, CancellationToken cancellationToken)
     {
