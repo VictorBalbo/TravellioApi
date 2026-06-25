@@ -12,6 +12,9 @@ builder.Services.AddDatabaseInfrastructure(builder.Configuration);
 // Add Dependency Injection
 builder.Services.AddScoped<AirportImporter>();
 
+// Add Loggers
+builder.Host.AddSerilog();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
