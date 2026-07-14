@@ -19,7 +19,7 @@ public class TripTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsyncLi
         Converters = { new JsonStringEnumConverter() }
     };
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         using var scope = factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -27,7 +27,7 @@ public class TripTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsyncLi
         await db.SaveChangesAsync();
     }
 
-    public Task DisposeAsync() => Task.CompletedTask;
+    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 
     private async Task SeedAsync(params object[] entities)
     {
@@ -62,7 +62,7 @@ public class TripTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsyncLi
     public async Task GetAll_WhenNoTrips_Returns404()
     {
         // Act
-        var response = await _client.GetAsync("/Api/Trips");
+        var response = await _client.GetAsync("/Api/Trips", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -75,11 +75,12 @@ public class TripTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsyncLi
         await SeedAsync(NewTrip("Trip A"), NewTrip("Trip B"));
 
         // Act
-        var response = await _client.GetAsync("/Api/Trips");
+        var response = await _client.GetAsync("/Api/Trips", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var trips = await response.Content.ReadFromJsonAsync<List<TripDto>>(JsonOptions);
+        var trips = await response.Content.ReadFromJsonAsync<List<TripDto>>(JsonOptions,
+            cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(2, trips!.Count);
         Assert.Contains(trips, t => t.Name == "Trip A");
         Assert.Contains(trips, t => t.Name == "Trip B");
@@ -91,7 +92,8 @@ public class TripTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsyncLi
     public async Task GetById_WhenNotFound_Returns404()
     {
         // Act
-        var response = await _client.GetAsync($"/Api/Trips/{Guid.CreateVersion7()}");
+        var response =
+            await _client.GetAsync($"/Api/Trips/{Guid.CreateVersion7()}", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -105,11 +107,12 @@ public class TripTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsyncLi
         await SeedAsync(trip);
 
         // Act
-        var response = await _client.GetAsync($"/Api/Trips/{trip.Id}");
+        var response = await _client.GetAsync($"/Api/Trips/{trip.Id}", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var dto = await response.Content.ReadFromJsonAsync<TripDto>(JsonOptions);
+        var dto = await response.Content.ReadFromJsonAsync<TripDto>(JsonOptions,
+            cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(trip.Id, dto!.Id);
         Assert.Equal("Paris 2026", dto.Name);
         Assert.Equal(trip.StartDate, dto.StartDate);
@@ -125,11 +128,12 @@ public class TripTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsyncLi
         await SeedAsync(trip, destination);
 
         // Act
-        var response = await _client.GetAsync($"/Api/Trips/{trip.Id}");
+        var response = await _client.GetAsync($"/Api/Trips/{trip.Id}", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var dto = await response.Content.ReadFromJsonAsync<TripDto>(JsonOptions);
+        var dto = await response.Content.ReadFromJsonAsync<TripDto>(JsonOptions,
+            cancellationToken: TestContext.Current.CancellationToken);
         var dest = Assert.Single(dto!.Destinations!);
         Assert.Equal(destination.Name, dest.Name);
         Assert.Equal(destination.PlaceId, dest.PlaceId);
@@ -149,7 +153,8 @@ public class TripTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsyncLi
         };
 
         // Act
-        var response = await _client.PostAsJsonAsync("/Api/Trips", dto);
+        var response = await _client.PostAsJsonAsync("/Api/Trips", dto,
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -168,13 +173,15 @@ public class TripTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsyncLi
         };
 
         // Act
-        var response = await _client.PostAsJsonAsync("/Api/Trips", dto);
-        var created = await response.Content.ReadFromJsonAsync<TripDto>(JsonOptions);
+        var response = await _client.PostAsJsonAsync("/Api/Trips", dto,
+            cancellationToken: TestContext.Current.CancellationToken);
+        var created = await response.Content.ReadFromJsonAsync<TripDto>(JsonOptions,
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         using var scope = factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var saved = await db.Trips.FindAsync(created!.Id);
+        var saved = await db.Trips.FindAsync(new object?[] { created!.Id }, TestContext.Current.CancellationToken);
         Assert.NotNull(saved);
         Assert.Equal("Persisted Trip", saved.Name);
     }
@@ -195,13 +202,14 @@ public class TripTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsyncLi
         };
 
         // Act
-        var response = await _client.PostAsJsonAsync("/Api/Trips", updated);
+        var response = await _client.PostAsJsonAsync("/Api/Trips", updated,
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         using var scope = factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var saved = await db.Trips.FindAsync(trip.Id);
+        var saved = await db.Trips.FindAsync(new object?[] { trip.Id }, TestContext.Current.CancellationToken);
         Assert.Equal("Updated Name", saved!.Name);
     }
 
@@ -211,7 +219,8 @@ public class TripTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsyncLi
     public async Task Delete_WhenNotFound_Returns404()
     {
         // Act
-        var response = await _client.DeleteAsync($"/Api/Trips/{Guid.CreateVersion7()}");
+        var response =
+            await _client.DeleteAsync($"/Api/Trips/{Guid.CreateVersion7()}", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -225,7 +234,7 @@ public class TripTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsyncLi
         await SeedAsync(trip);
 
         // Act
-        var response = await _client.DeleteAsync($"/Api/Trips/{trip.Id}");
+        var response = await _client.DeleteAsync($"/Api/Trips/{trip.Id}", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
@@ -239,12 +248,12 @@ public class TripTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsyncLi
         await SeedAsync(trip);
 
         // Act
-        await _client.DeleteAsync($"/Api/Trips/{trip.Id}");
+        await _client.DeleteAsync($"/Api/Trips/{trip.Id}", TestContext.Current.CancellationToken);
 
         // Assert
         using var scope = factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        Assert.Null(await db.Trips.FindAsync(trip.Id));
+        Assert.Null(await db.Trips.FindAsync(new object?[] { trip.Id }, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -256,7 +265,7 @@ public class TripTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsyncLi
         await SeedAsync(trip, destination);
 
         // Act
-        await _client.DeleteAsync($"/Api/Trips/{trip.Id}");
+        await _client.DeleteAsync($"/Api/Trips/{trip.Id}", TestContext.Current.CancellationToken);
 
         // Assert
         using var scope = factory.Services.CreateScope();

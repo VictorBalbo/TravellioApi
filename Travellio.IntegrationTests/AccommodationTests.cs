@@ -19,7 +19,7 @@ public class AccommodationTests(ApiFactory factory) : IClassFixture<ApiFactory>,
         Converters = { new JsonStringEnumConverter() }
     };
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         using var scope = factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -27,7 +27,7 @@ public class AccommodationTests(ApiFactory factory) : IClassFixture<ApiFactory>,
         await db.SaveChangesAsync();
     }
 
-    public Task DisposeAsync() => Task.CompletedTask;
+    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 
     private async Task SeedAsync(params object[] entities)
     {
@@ -79,7 +79,7 @@ public class AccommodationTests(ApiFactory factory) : IClassFixture<ApiFactory>,
         await SeedAsync(trip, destination);
 
         // Act
-        var response = await _client.GetAsync(BaseUrl(trip.Id, destination.Id));
+        var response = await _client.GetAsync(BaseUrl(trip.Id, destination.Id), TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -96,11 +96,12 @@ public class AccommodationTests(ApiFactory factory) : IClassFixture<ApiFactory>,
         await SeedAsync(trip, destination, accommodationA, accommodationB);
 
         // Act
-        var response = await _client.GetAsync(BaseUrl(trip.Id, destination.Id));
+        var response = await _client.GetAsync(BaseUrl(trip.Id, destination.Id), TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var accommodations = await response.Content.ReadFromJsonAsync<List<AccommodationDto>>(JsonOptions);
+        var accommodations = await response.Content.ReadFromJsonAsync<List<AccommodationDto>>(JsonOptions,
+            cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(2, accommodations!.Count);
         Assert.Contains(accommodations, a => a.Name == "Le Bristol");
         Assert.Contains(accommodations, a => a.Name == "Le Marais Suites");
@@ -117,7 +118,8 @@ public class AccommodationTests(ApiFactory factory) : IClassFixture<ApiFactory>,
         await SeedAsync(trip, destination);
 
         // Act
-        var response = await _client.GetAsync($"{BaseUrl(trip.Id, destination.Id)}/{Guid.CreateVersion7()}");
+        var response = await _client.GetAsync($"{BaseUrl(trip.Id, destination.Id)}/{Guid.CreateVersion7()}",
+            TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -133,11 +135,13 @@ public class AccommodationTests(ApiFactory factory) : IClassFixture<ApiFactory>,
         await SeedAsync(trip, destination, accommodation);
 
         // Act
-        var response = await _client.GetAsync($"{BaseUrl(trip.Id, destination.Id)}/{accommodation.Id}");
+        var response = await _client.GetAsync($"{BaseUrl(trip.Id, destination.Id)}/{accommodation.Id}",
+            TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var dto = await response.Content.ReadFromJsonAsync<AccommodationDto>(JsonOptions);
+        var dto = await response.Content.ReadFromJsonAsync<AccommodationDto>(JsonOptions,
+            cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(accommodation.Id, dto!.Id);
         Assert.Equal(accommodation.Name, dto.Name);
         Assert.Equal(accommodation.PlaceId, dto.PlaceId);
@@ -153,11 +157,13 @@ public class AccommodationTests(ApiFactory factory) : IClassFixture<ApiFactory>,
         await SeedAsync(trip, destination, accommodation);
 
         // Act
-        var response = await _client.GetAsync($"{BaseUrl(trip.Id, destination.Id)}/{accommodation.Id}");
+        var response = await _client.GetAsync($"{BaseUrl(trip.Id, destination.Id)}/{accommodation.Id}",
+            TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var dto = await response.Content.ReadFromJsonAsync<AccommodationDto>(JsonOptions);
+        var dto = await response.Content.ReadFromJsonAsync<AccommodationDto>(JsonOptions,
+            cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal("Paris, France", dto!.Place?.Address);
     }
 
@@ -179,7 +185,8 @@ public class AccommodationTests(ApiFactory factory) : IClassFixture<ApiFactory>,
         };
 
         // Act
-        var response = await _client.PostAsJsonAsync(BaseUrl(trip.Id, destination.Id), dto);
+        var response = await _client.PostAsJsonAsync(BaseUrl(trip.Id, destination.Id), dto,
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -202,13 +209,16 @@ public class AccommodationTests(ApiFactory factory) : IClassFixture<ApiFactory>,
         };
 
         // Act
-        var response = await _client.PostAsJsonAsync(BaseUrl(trip.Id, destination.Id), dto);
-        var created = await response.Content.ReadFromJsonAsync<AccommodationDto>(JsonOptions);
+        var response = await _client.PostAsJsonAsync(BaseUrl(trip.Id, destination.Id), dto,
+            cancellationToken: TestContext.Current.CancellationToken);
+        var created = await response.Content.ReadFromJsonAsync<AccommodationDto>(JsonOptions,
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         using var scope = factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var saved = await db.Accommodations.FindAsync(created!.Id);
+        var saved = await db.Accommodations.FindAsync(new object?[] { created!.Id },
+            TestContext.Current.CancellationToken);
         Assert.NotNull(saved);
         Assert.Equal("Hotel de Ville", saved.Name);
     }
@@ -224,7 +234,8 @@ public class AccommodationTests(ApiFactory factory) : IClassFixture<ApiFactory>,
         await SeedAsync(trip, destination);
 
         // Act
-        var response = await _client.DeleteAsync($"{BaseUrl(trip.Id, destination.Id)}/{Guid.CreateVersion7()}");
+        var response = await _client.DeleteAsync($"{BaseUrl(trip.Id, destination.Id)}/{Guid.CreateVersion7()}",
+            TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -240,7 +251,8 @@ public class AccommodationTests(ApiFactory factory) : IClassFixture<ApiFactory>,
         await SeedAsync(trip, destination, accommodation);
 
         // Act
-        var response = await _client.DeleteAsync($"{BaseUrl(trip.Id, destination.Id)}/{accommodation.Id}");
+        var response = await _client.DeleteAsync($"{BaseUrl(trip.Id, destination.Id)}/{accommodation.Id}",
+            TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
@@ -256,11 +268,13 @@ public class AccommodationTests(ApiFactory factory) : IClassFixture<ApiFactory>,
         await SeedAsync(trip, destination, accommodation);
 
         // Act
-        await _client.DeleteAsync($"{BaseUrl(trip.Id, destination.Id)}/{accommodation.Id}");
+        await _client.DeleteAsync($"{BaseUrl(trip.Id, destination.Id)}/{accommodation.Id}",
+            TestContext.Current.CancellationToken);
 
         // Assert
         using var scope = factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        Assert.Null(await db.Accommodations.FindAsync(accommodation.Id));
+        Assert.Null(await db.Accommodations.FindAsync(new object?[] { accommodation.Id },
+            TestContext.Current.CancellationToken));
     }
 }

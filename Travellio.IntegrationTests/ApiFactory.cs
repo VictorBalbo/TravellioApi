@@ -17,7 +17,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         .WithPassword("postgres")
         .Build();
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await _postgres.StartAsync();
 
@@ -36,12 +36,13 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
                 options
                     .UseNpgsql(_postgres.GetConnectionString())
                     .UseSnakeCaseNamingConvention());
-            
+
             var placeDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IPlaceProvider));
             if (placeDescriptor != null)
             {
                 services.Remove(placeDescriptor);
             }
+
             services.AddScoped<IPlaceProvider, FakeWanderlogProvider>();
         });
     }
