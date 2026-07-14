@@ -14,7 +14,7 @@ public class LegConfiguration : BaseEntityConfiguration<Leg>
             .IsRequired()
             .HasMaxLength(Constants.PlaceIdSize);
         builder.Property(p => p.DeparturePlaceShortName)
-            .HasMaxLength(20);
+            .HasMaxLength(200);
         builder.Property(p => p.DeparturePlaceDescription)
             .HasMaxLength(200);
         builder
@@ -23,7 +23,7 @@ public class LegConfiguration : BaseEntityConfiguration<Leg>
             .IsRequired()
             .HasMaxLength(Constants.PlaceIdSize);
         builder.Property(p => p.ArrivalPlaceShortName)
-            .HasMaxLength(20);
+            .HasMaxLength(200);
         builder.Property(p => p.ArrivalPlaceDescription)
             .HasMaxLength(200);
         builder

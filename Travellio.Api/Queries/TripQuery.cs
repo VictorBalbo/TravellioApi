@@ -21,6 +21,7 @@ public class TripQuery(AppDbContext context, IPlaceService placeService) : ITrip
                 StartDate = t.StartDate,
                 EndDate = t.EndDate,
                 HomePlaceId = t.HomePlaceId,
+                HomePlaceName = t.HomePlaceName
             })
             .ToListAsync(cancellationToken);
         return trips;
@@ -38,6 +39,7 @@ public class TripQuery(AppDbContext context, IPlaceService placeService) : ITrip
                 StartDate = t.StartDate,
                 EndDate = t.EndDate,
                 HomePlaceId = t.HomePlaceId,
+                HomePlaceName = t.HomePlaceName,
                 Destinations = t.Destinations!.Select(d => new DestinationDto
                 {
                     Id = d.Id,
