@@ -1,5 +1,6 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using StackExchange.Redis;
 using Travellio.Api.Converters;
 using Travellio.Api.Middleware;
@@ -60,6 +61,23 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
 builder.Services.AddHttpClient();
+
+// Surface model validation failures in the Serilog request log line
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    var defaultFactory = options.InvalidModelStateResponseFactory;
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var diagnosticContext = context.HttpContext.RequestServices.GetRequiredService<IDiagnosticContext>();
+        var errors = context.ModelState
+            .Where(entry => entry.Value?.Errors.Count > 0)
+            .ToDictionary(entry => entry.Key, entry => entry.Value!.Errors.Select(e => e.ErrorMessage).ToArray());
+
+        diagnosticContext.Set("ValidationErrors", errors, destructureObjects: true);
+
+        return defaultFactory(context);
+    };
+});
 
 // Add Loggers
 builder.Host.AddSerilog();
