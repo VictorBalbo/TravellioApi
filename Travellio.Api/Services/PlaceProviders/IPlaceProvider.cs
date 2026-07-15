@@ -12,5 +12,7 @@ public interface IPlaceProvider
         double lat,
         double lng,
         double radius,
-        string language, CancellationToken cancellationToken);
+        string language,
+        string locationType,
+        CancellationToken cancellationToken);
 }

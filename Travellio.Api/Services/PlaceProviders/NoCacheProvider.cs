@@ -17,6 +17,7 @@ public class NoCacheProvider : ICachedPlaceProvider
         double lng,
         double radius,
         string language,
+        string locationType,
         CancellationToken cancellationToken) => Task.FromResult<IEnumerable<AutoComplete>?>(null);
 
     public Task<bool> SetAutoCompleteAsync(

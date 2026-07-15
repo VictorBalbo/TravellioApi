@@ -32,11 +32,10 @@ public class PlaceService(
     }
 
     public async Task<IEnumerable<AutoComplete>?> GetAutoComplete(string text, string sessionToken, double lat,
-        double lng, double radius,
-        string language, CancellationToken cancellationToken)
+        double lng, double radius, string language, string locationType, CancellationToken cancellationToken)
     {
         var autoComplete =
-            await cachedProvider.GetAutoCompleteAsync(text, sessionToken, lat, lng, radius, language,
+            await cachedProvider.GetAutoCompleteAsync(text, sessionToken, lat, lng, radius, language, locationType,
                 cancellationToken);
         if (autoComplete != null)
         {
@@ -48,7 +47,7 @@ public class PlaceService(
 
 
         autoComplete = await externalProvider.GetAutoCompleteAsync(text, sessionToken, lat, lng, radius, language,
-            cancellationToken);
+            locationType, cancellationToken);
         var autoCompletes = autoComplete?.ToArray();
         if (autoCompletes != null && autoCompletes.Length != 0)
         {

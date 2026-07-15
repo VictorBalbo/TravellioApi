@@ -29,6 +29,7 @@ public class PlacesController(IPlaceService placeService) : ControllerBase
         [FromQuery] double lng,
         [FromQuery] double radius,
         [FromQuery] string language,
+        [FromQuery] string? locationType,
         [FromQuery] string? sessionToken,
         CancellationToken cancellationToken)
     {
@@ -39,6 +40,7 @@ public class PlacesController(IPlaceService placeService) : ControllerBase
             lng,
             radius,
             language,
+            locationType ?? "",
             cancellationToken);
 
         return Ok(place);

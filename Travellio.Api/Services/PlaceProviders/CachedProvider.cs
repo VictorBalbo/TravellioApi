@@ -78,6 +78,7 @@ public class CachedProvider(IConnectionMultiplexer redis, ILogger<CachedProvider
         double lng,
         double radius,
         string language,
+        string locationType,
         CancellationToken cancellationToken)
     {
         try

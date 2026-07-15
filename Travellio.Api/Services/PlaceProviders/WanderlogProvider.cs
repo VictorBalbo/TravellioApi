@@ -91,8 +91,7 @@ public class WanderlogProvider(HttpClient httpClient, IConfiguration configurati
     }
 
     public async Task<IEnumerable<AutoComplete>?> GetAutoCompleteAsync(string text, string sessionToken, double lat,
-        double lng, double radius,
-        string language, CancellationToken cancellationToken)
+        double lng, double radius, string language, string locationType, CancellationToken cancellationToken)
     {
         var autoCompleteUrl = configuration["WanderlogAutoCompleteUrl"];
         var location = new WanderlogAutoCompleteLocation() { Latitude = lat, Longitude = lng };
