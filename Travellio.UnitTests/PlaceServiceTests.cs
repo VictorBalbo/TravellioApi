@@ -114,29 +114,29 @@ public class PlaceServiceTests
     public async Task GetAutoComplete_CacheHit_ReturnsCachedResults()
     {
         // Arrange
-        _cache.GetAutoCompleteAsync("paris", "token", 0, 0, 0, "en", CancellationToken.None)
+        _cache.GetAutoCompleteAsync("paris", "token", 0, 0, 0, "en", "", CancellationToken.None)
             .Returns(AutoCompleteResults);
 
         // Act
-        var result = await _placeService.GetAutoComplete("paris", "token", 0, 0, 0, "en", CancellationToken.None);
+        var result = await _placeService.GetAutoComplete("paris", "token", 0, 0, 0, "en", "", CancellationToken.None);
 
         // Assert
         Assert.Equal(AutoCompleteResults, result);
         _diagnosticContext.Received(1).Set("CacheResult", "Hit");
         await _external.DidNotReceive()
             .GetAutoCompleteAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<double>(), Arg.Any<double>(),
-                Arg.Any<double>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+                Arg.Any<double>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
     public async Task GetAutoComplete_CacheHit_DoesNotWriteToCache()
     {
         // Arrange
-        _cache.GetAutoCompleteAsync("paris", "token", 0, 0, 0, "en", CancellationToken.None)
+        _cache.GetAutoCompleteAsync("paris", "token", 0, 0, 0, "en", "", CancellationToken.None)
             .Returns(AutoCompleteResults);
 
         // Act
-        await _placeService.GetAutoComplete("paris", "token", 0, 0, 0, "en", CancellationToken.None);
+        await _placeService.GetAutoComplete("paris", "token", 0, 0, 0, "en", "", CancellationToken.None);
 
         // Assert
         await _cache.DidNotReceive()
@@ -148,13 +148,13 @@ public class PlaceServiceTests
     public async Task GetAutoComplete_CacheMiss_ExternalReturnsResults_StoresAndReturnsResults()
     {
         // Arrange
-        _cache.GetAutoCompleteAsync("paris", "token", 0, 0, 0, "en", CancellationToken.None)
+        _cache.GetAutoCompleteAsync("paris", "token", 0, 0, 0, "en", "", CancellationToken.None)
             .Returns((IEnumerable<AutoComplete>?)null);
-        _external.GetAutoCompleteAsync("paris", "token", 0, 0, 0, "en", CancellationToken.None)
+        _external.GetAutoCompleteAsync("paris", "token", 0, 0, 0, "en", "", CancellationToken.None)
             .Returns(AutoCompleteResults);
 
         // Act
-        var result = await _placeService.GetAutoComplete("paris", "token", 0, 0, 0, "en", CancellationToken.None);
+        var result = await _placeService.GetAutoComplete("paris", "token", 0, 0, 0, "en", "", CancellationToken.None);
 
         // Assert
         Assert.Equal(AutoCompleteResults, result);
@@ -167,13 +167,13 @@ public class PlaceServiceTests
     public async Task GetAutoComplete_CacheMiss_ExternalReturnsEmptyList_ReturnsNull()
     {
         // Arrange
-        _cache.GetAutoCompleteAsync("paris", "token", 0, 0, 0, "en", CancellationToken.None)
+        _cache.GetAutoCompleteAsync("paris", "token", 0, 0, 0, "en", "", CancellationToken.None)
             .Returns((IEnumerable<AutoComplete>?)null);
-        _external.GetAutoCompleteAsync("paris", "token", 0, 0, 0, "en", CancellationToken.None)
+        _external.GetAutoCompleteAsync("paris", "token", 0, 0, 0, "en", "", CancellationToken.None)
             .Returns(Array.Empty<AutoComplete>());
 
         // Act
-        var result = await _placeService.GetAutoComplete("paris", "token", 0, 0, 0, "en", CancellationToken.None);
+        var result = await _placeService.GetAutoComplete("paris", "token", 0, 0, 0, "en", "", CancellationToken.None);
 
         // Assert
         Assert.Null(result);
@@ -186,13 +186,13 @@ public class PlaceServiceTests
     public async Task GetAutoComplete_CacheMiss_ExternalReturnsNull_ReturnsNull()
     {
         // Arrange
-        _cache.GetAutoCompleteAsync("paris", "token", 0, 0, 0, "en", CancellationToken.None)
+        _cache.GetAutoCompleteAsync("paris", "token", 0, 0, 0, "en", "", CancellationToken.None)
             .Returns((IEnumerable<AutoComplete>?)null);
-        _external.GetAutoCompleteAsync("paris", "token", 0, 0, 0, "en", CancellationToken.None)
+        _external.GetAutoCompleteAsync("paris", "token", 0, 0, 0, "en", "", CancellationToken.None)
             .Returns((IEnumerable<AutoComplete>?)null);
 
         // Act
-        var result = await _placeService.GetAutoComplete("paris", "token", 0, 0, 0, "en", CancellationToken.None);
+        var result = await _placeService.GetAutoComplete("paris", "token", 0, 0, 0, "en", "", CancellationToken.None);
 
         // Assert
         Assert.Null(result);

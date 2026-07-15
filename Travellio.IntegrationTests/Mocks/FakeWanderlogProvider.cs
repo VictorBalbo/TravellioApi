@@ -19,6 +19,6 @@ public class FakeWanderlogProvider : IPlaceProvider
         => Task.FromResult<Place?>(FakePlace);
 
     public Task<IEnumerable<AutoComplete>?> GetAutoCompleteAsync(string text, string sessionToken, double lat,
-        double lng, double radius, string language, CancellationToken cancellationToken)
+        double lng, double radius, string language, string locationType, CancellationToken cancellationToken)
         => Task.FromResult<IEnumerable<AutoComplete>?>(null);
 }
