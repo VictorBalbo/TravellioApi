@@ -51,6 +51,10 @@ Connection strings and external URLs go in `appsettings.Development.json` (or en
 | `WanderlogPlaceDetailsUrl` | Wanderlog details endpoint; must contain `{placeId}` placeholder |
 | `WanderlogMetadataUrl` | Wanderlog metadata endpoint; must contain `{placeId}` placeholder |
 | `WanderlogAutoCompleteUrl` | Wanderlog autocomplete endpoint; request JSON is appended as `?request=` query param |
+| `R2:AccountId` | Cloudflare account ID; used to build the R2 S3-compatible endpoint (`https://{accountId}.r2.cloudflarestorage.com`) — **required**, app fails to start if missing |
+| `R2:AccessKeyId` / `R2:SecretAccessKey` | R2 API token credentials (S3 auth) — **required** |
+| `R2:BucketName` | R2 bucket that image uploads are written to — **required** |
+| `R2:PublicUrl` | Base URL used to build the public link returned for an uploaded image (custom domain or public `r2.dev` bucket URL) — **required** |
 
 Redis connection string format: `host:port,password=xxx,ssl=true` — StackExchange.Redis does **not** parse `rediss://` URIs.
 
@@ -167,6 +171,9 @@ Serilog with `UseSerilogRequestLogging`. Each HTTP request log is enriched with 
 **Places**
 - `GET /Api/Places/{id}` — fetch and cache a single place from Wanderlog
 - `GET /Api/Places/Autocomplete?text=&lat=&lng=&radius=&language=&sessionToken=` — place autocomplete (sessionToken optional)
+
+**Images**
+- `POST /Api/Images` — upload an image (multipart/form-data, field `file`) to the Cloudflare R2 bucket; returns `{ url }`. Max 10MB; allowed types: jpeg, png, webp, gif
 
 OpenAPI is only mapped in Development (`app.MapOpenApi()`). Auth is not yet implemented (marked TODO in controllers).
 

@@ -19,6 +19,7 @@ builder.Services.AddOpenApi();
 // Add Database connections
 builder.Services.AddDatabaseInfrastructure(builder.Configuration);
 builder.Services.AddRedisInfrastructure(builder.Configuration);
+builder.Services.AddR2Infrastructure(builder.Configuration);
 
 // Add Dependency Injection
 builder.Services.AddScoped<ICachedPlaceProvider>(sp =>
@@ -53,6 +54,7 @@ builder.Services.AddScoped<IDestinationService, DestinationService>();
 builder.Services.AddScoped<ITransportationService, TransportationService>();
 builder.Services.AddScoped<IActivityService, ActivityService>();
 builder.Services.AddScoped<IAccommodationService, AccommodationService>();
+builder.Services.AddScoped<IImageStorageService, ImageStorageService>();
 
 // Add Controllers
 builder.Services.AddControllers()
