@@ -26,11 +26,11 @@ public class TransportationQuery(AppDbContext context, IPlaceService placeServic
                     Id = l.Id,
                     DeparturePlaceId = l.DeparturePlaceId,
                     DeparturePlaceShortName = l.DeparturePlaceShortName,
-                    DeparturePlaceDescription =  l.DeparturePlaceDescription,
-                    DeparturePlaceCoordinates =  l.DeparturePlaceCoordinates,
+                    DeparturePlaceDescription = l.DeparturePlaceDescription,
+                    DeparturePlaceCoordinates = l.DeparturePlaceCoordinates,
                     ArrivalPlaceId = l.ArrivalPlaceId,
                     ArrivalPlaceShortName = l.ArrivalPlaceShortName,
-                    ArrivalPlaceDescription =  l.ArrivalPlaceDescription,
+                    ArrivalPlaceDescription = l.ArrivalPlaceDescription,
                     ArrivalPlaceCoordinates = l.ArrivalPlaceCoordinates,
                     Type = l.Type,
                     DepartureTime = l.DepartureTime,
@@ -46,7 +46,8 @@ public class TransportationQuery(AppDbContext context, IPlaceService placeServic
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<TransportationDto?> GetByIdAsync(Guid tripId, Guid id, bool enrichPlaces, CancellationToken cancellationToken)
+    public async Task<TransportationDto?> GetByIdAsync(Guid tripId, Guid id, bool enrichPlaces,
+        CancellationToken cancellationToken)
     {
         var transportation = await _dbSet
             .AsNoTracking()
@@ -62,11 +63,11 @@ public class TransportationQuery(AppDbContext context, IPlaceService placeServic
                     Id = l.Id,
                     DeparturePlaceId = l.DeparturePlaceId,
                     DeparturePlaceShortName = l.DeparturePlaceShortName,
-                    DeparturePlaceDescription =  l.DeparturePlaceDescription,
-                    DeparturePlaceCoordinates =  l.DeparturePlaceCoordinates,
+                    DeparturePlaceDescription = l.DeparturePlaceDescription,
+                    DeparturePlaceCoordinates = l.DeparturePlaceCoordinates,
                     ArrivalPlaceId = l.ArrivalPlaceId,
                     ArrivalPlaceShortName = l.ArrivalPlaceShortName,
-                    ArrivalPlaceDescription =  l.ArrivalPlaceDescription,
+                    ArrivalPlaceDescription = l.ArrivalPlaceDescription,
                     ArrivalPlaceCoordinates = l.ArrivalPlaceCoordinates,
                     Type = l.Type,
                     DepartureTime = l.DepartureTime,
@@ -77,26 +78,32 @@ public class TransportationQuery(AppDbContext context, IPlaceService placeServic
                     Reservation = l.Reservation,
                     Seat = l.Seat,
                 }).ToList(),
-                Arrival = tr.Arrival == null ? null : new DestinationDto
-                {
-                    Id = tr.Arrival.Id,
-                    PlaceId = tr.Arrival.PlaceId,
-                    Name =  tr.Arrival.Name,
-                    Coordinates =  tr.Arrival.Coordinates,
-                    StartDate = tr.Arrival.StartDate,
-                    EndDate = tr.Arrival.EndDate,
-                    Notes = tr.Arrival.Notes,
-                },
-                Departure = tr.Departure == null ? null : new DestinationDto
-                {
-                    Id = tr.Departure.Id,
-                    PlaceId = tr.Departure.PlaceId,
-                    Name =  tr.Departure.Name,
-                    Coordinates = tr.Departure.Coordinates,
-                    StartDate = tr.Departure.StartDate,
-                    EndDate = tr.Departure.EndDate,
-                    Notes = tr.Departure.Notes,
-                },
+                Arrival = tr.Arrival == null
+                    ? null
+                    : new DestinationDto
+                    {
+                        Id = tr.Arrival.Id,
+                        PlaceId = tr.Arrival.PlaceId,
+                        Name = tr.Arrival.Name,
+                        Coordinates = tr.Arrival.Coordinates,
+                        StartDate = tr.Arrival.StartDate,
+                        EndDate = tr.Arrival.EndDate,
+                        Notes = tr.Arrival.Notes,
+                        ImageUrl = tr.Arrival.ImageUrl,
+                    },
+                Departure = tr.Departure == null
+                    ? null
+                    : new DestinationDto
+                    {
+                        Id = tr.Departure.Id,
+                        PlaceId = tr.Departure.PlaceId,
+                        Name = tr.Departure.Name,
+                        Coordinates = tr.Departure.Coordinates,
+                        StartDate = tr.Departure.StartDate,
+                        EndDate = tr.Departure.EndDate,
+                        Notes = tr.Departure.Notes,
+                        ImageUrl = tr.Departure.ImageUrl,
+                    },
             })
             .AsSplitQuery()
             .FirstOrDefaultAsync(cancellationToken);
@@ -109,7 +116,8 @@ public class TransportationQuery(AppDbContext context, IPlaceService placeServic
         return transportation;
     }
 
-    private async Task<TransportationDto> EnrichPlaceDetailsAsync(TransportationDto transportation, CancellationToken cancellationToken)
+    private async Task<TransportationDto> EnrichPlaceDetailsAsync(TransportationDto transportation,
+        CancellationToken cancellationToken)
     {
         var legTasks = transportation.Legs
             .Select(async l =>

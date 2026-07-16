@@ -6,11 +6,12 @@ public class DestinationDto
 {
     public Guid? Id { get; init; }
     public required string PlaceId { get; init; }
-    public required string Name { get; set; }
-    public required Coordinates Coordinates { get; set; }
+    public required string Name { get; init; }
+    public required Coordinates Coordinates { get; init; }
     public required DateOnly StartDate { get; init; }
     public required DateOnly EndDate { get; init; }
     public string? Notes { get; init; }
+    public string? ImageUrl { get; init; }
     public Place? Place { get; set; }
     public int? AccommodationsCount { get; init; }
     public ICollection<AccommodationDto>? Accommodations { get; init; }
@@ -32,6 +33,7 @@ public static class DestinationMapper
             StartDate = dto.StartDate,
             EndDate = dto.EndDate,
             Notes = dto.Notes,
+            ImageUrl = dto.ImageUrl,
             Accommodations = dto.Accommodations?.ToEntity(dto.Id ?? Guid.Empty),
             Activities = dto.Activities?.ToEntity(dto.Id ?? Guid.Empty),
             TripId = tripId,
@@ -54,6 +56,7 @@ public static class DestinationMapper
             StartDate = entity.StartDate,
             EndDate = entity.EndDate,
             Notes = entity.Notes,
+            ImageUrl = entity.ImageUrl,
             Accommodations = entity.Accommodations?.ToDto(),
             AccommodationsCount =  entity.Accommodations?.Count,
             Activities = entity.Activities?.ToDto(),

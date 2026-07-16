@@ -9,6 +9,7 @@ public class Destination : IBaseEntity
     public required DateOnly StartDate { get; set; }
     public required DateOnly EndDate { get; set; }
     public string? Notes { get; set; }
+    public string? ImageUrl { get; set; }
     public ICollection<Accommodation>? Accommodations { get; set; }
     public ICollection<Activity>? Activities { get; set; }
 

@@ -8,6 +8,7 @@ public class Trip : IBaseEntity
     public required DateOnly EndDate { get; set; }
     public string? HomePlaceId { get; set; }
     public string? HomePlaceName { get; set; }
+    public string? ImageUrl { get; set; }
 
     // Navigation properties
     public ICollection<Destination>? Destinations { get; set; }

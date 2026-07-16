@@ -25,6 +25,8 @@ public class DestinationConfiguration : BaseEntityConfiguration<Destination>
             .IsRequired();
         builder.Property(p => p.Notes)
             .HasMaxLength(5000);
+        builder.Property(p => p.ImageUrl)
+            .HasMaxLength(255);
 
         // Destination → Activities (1:N)
         builder

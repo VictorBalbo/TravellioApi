@@ -24,6 +24,7 @@ public class DestinationQuery(AppDbContext context, IPlaceService placeService) 
                 StartDate = d.StartDate,
                 EndDate = d.EndDate,
                 Notes = d.Notes,
+                ImageUrl =  d.ImageUrl,
                 ActivitiesCount = d.Activities!.Count,
                 AccommodationsCount = d.Accommodations!.Count,
             })
@@ -45,6 +46,7 @@ public class DestinationQuery(AppDbContext context, IPlaceService placeService) 
                 StartDate = d.StartDate,
                 EndDate = d.EndDate,
                 Notes = d.Notes,
+                ImageUrl =  d.ImageUrl,
                 ActivitiesCount = d.Activities!.Count,
                 AccommodationsCount = d.Accommodations!.Count,
                 Activities = d.Activities!.Select(a => new ActivityDto

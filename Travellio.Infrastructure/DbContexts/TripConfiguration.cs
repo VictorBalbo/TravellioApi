@@ -22,6 +22,8 @@ public class TripConfiguration : BaseEntityConfiguration<Trip>
             .HasMaxLength(Constants.PlaceIdSize);
         builder.Property(p => p.HomePlaceName)
             .HasMaxLength(60);
+        builder.Property(p => p.ImageUrl)
+            .HasMaxLength(255);
 
         // Trip → Destinations (1:N)
         builder

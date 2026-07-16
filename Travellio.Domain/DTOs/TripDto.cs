@@ -10,6 +10,7 @@ public class TripDto
     public required DateOnly EndDate { get; init; }
     public string? HomePlaceId { get; init; }
     public string? HomePlaceName { get; set; }
+    public string? ImageUrl { get; set; }
     public ICollection<DestinationDto>? Destinations { get; init; }
     public ICollection<TransportationDto>? Transportations { get; init; }
 }
@@ -26,6 +27,7 @@ public static class TripMapper
             EndDate = dto.EndDate,
             HomePlaceId = dto.HomePlaceId,
             HomePlaceName = dto.HomePlaceName,
+            ImageUrl = dto.ImageUrl,
             Destinations = dto.Destinations?.ToEntity(dto.Id ?? Guid.Empty),
             Transportations = dto.Transportations?.ToEntity(dto.Id ?? Guid.Empty),
         };
@@ -46,6 +48,7 @@ public static class TripMapper
             EndDate = entity.EndDate,
             HomePlaceId = entity.HomePlaceId,
             HomePlaceName = entity.HomePlaceName,
+            ImageUrl = entity.ImageUrl,
             Destinations = entity.Destinations?.ToDto(),
             Transportations = entity.Transportations?.ToDto(),
         };
