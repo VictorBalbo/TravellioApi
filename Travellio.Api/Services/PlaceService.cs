@@ -51,8 +51,18 @@ public class PlaceService(
         {
             try
             {
-                var autoComplete = await provider.GetAutoCompleteAsync(text, sessionToken, lat, lng, radius,
-                    language, locationType, cancellationToken);
+                IEnumerable<AutoComplete>? autoComplete;
+                if (string.IsNullOrEmpty(locationType))
+                {
+                    autoComplete = await provider.GetAutoCompleteAsync(text, sessionToken, lat, lng, radius,
+                        language, cancellationToken);
+                }
+                else
+                {
+                    autoComplete = await provider.GetAutoCompleteAsync(text, sessionToken, lat, lng, radius,
+                        language, locationType, cancellationToken);
+                }
+
                 if (autoComplete == null) continue;
 
                 var autoCompleteArray = autoComplete.ToArray();

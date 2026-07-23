@@ -77,7 +77,7 @@ public class GooglePlacesProvider(
         double lng, double radius, string language, string locationType, CancellationToken cancellationToken)
     {
         var apiKey = GetApiKey();
-        var locationTypes = locationType.Split(',').Select(l => l.Trim()).ToArray();
+        var locationTypes = locationType.Split(',').Where(l => !string.IsNullOrEmpty(l)).Select(l => l.Trim()).ToArray();
         var autoCompleteRequest = new GoogleAutoCompleteRequest
         {
             Input = text,

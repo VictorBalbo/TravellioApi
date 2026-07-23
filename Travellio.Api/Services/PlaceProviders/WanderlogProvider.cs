@@ -93,7 +93,7 @@ public class WanderlogProvider(HttpClient httpClient, IConfiguration configurati
     }
 
     public async Task<IEnumerable<AutoComplete>?> GetAutoCompleteAsync(string text, string sessionToken, double lat,
-        double lng, double radius, string language, string locationType, CancellationToken cancellationToken)
+        double lng, double radius, string language, CancellationToken cancellationToken)
     {
         var autoCompleteUrl = configuration["WanderlogAutoCompleteUrl"];
         var location = new WanderlogAutoCompleteLocation() { Latitude = lat, Longitude = lng };
@@ -135,5 +135,16 @@ public class WanderlogProvider(HttpClient httpClient, IConfiguration configurati
                 Offset = r.StructuredFormatting?.MainTextMatchedSubstrings?.FirstOrDefault()?.Offset ?? 0,
             },
         }) ?? [];
+    }
+
+    /// <summary>
+    /// Wanderlog does not support autocomplete requests with the locationType param.
+    /// </summary>
+    /// <returns>null</returns>
+    public Task<IEnumerable<AutoComplete>?> GetAutoCompleteAsync(string text, string sessionToken, double lat,
+        double lng, double radius, string locationType, string language,
+        CancellationToken cancellationToken)
+    {
+        return Task.FromResult<IEnumerable<AutoComplete>?>(null);
     }
 }

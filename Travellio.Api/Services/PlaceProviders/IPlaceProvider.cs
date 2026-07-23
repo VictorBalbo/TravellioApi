@@ -20,4 +20,14 @@ public interface IPlaceProvider
         string language,
         string locationType,
         CancellationToken cancellationToken);
+
+    Task<IEnumerable<AutoComplete>?> GetAutoCompleteAsync(
+        string text,
+        string sessionToken,
+        double lat,
+        double lng,
+        double radius,
+        string language,
+        CancellationToken cancellationToken) =>
+        GetAutoCompleteAsync(text, sessionToken, lat, lng, radius, language, "", cancellationToken);
 }
