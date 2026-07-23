@@ -223,6 +223,36 @@ public class AccommodationTests(ApiFactory factory) : IClassFixture<ApiFactory>,
         Assert.Equal("Hotel de Ville", saved.Name);
     }
 
+    [Fact]
+    public async Task Post_ExistingAccommodation_UpdatesName()
+    {
+        // Arrange
+        var trip = NewTrip();
+        var destination = NewDestination(trip.Id);
+        var accommodation = NewAccommodation(destination.Id, "Original Name");
+        await SeedAsync(trip, destination, accommodation);
+
+        var updated = new AccommodationDto
+        {
+            Id = accommodation.Id,
+            Name = "Updated Name",
+            PlaceId = accommodation.PlaceId,
+            Coordinates = accommodation.Coordinates,
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync(BaseUrl(trip.Id, destination.Id), updated,
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        using var scope = factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var saved = await db.Accommodations.FindAsync(new object?[] { accommodation.Id },
+            TestContext.Current.CancellationToken);
+        Assert.Equal("Updated Name", saved!.Name);
+    }
+
     // DELETE /Api/Trips/{tripId}/Destinations/{destinationId}/Accommodations/{id}
 
     [Fact]

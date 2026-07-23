@@ -222,6 +222,35 @@ public class ActivityTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsy
         Assert.Equal("Eiffel Tower", saved.Name);
     }
 
+    [Fact]
+    public async Task Post_ExistingActivity_UpdatesName()
+    {
+        // Arrange
+        var trip = NewTrip();
+        var destination = NewDestination(trip.Id);
+        var activity = NewActivity(destination.Id, "Original Name");
+        await SeedAsync(trip, destination, activity);
+
+        var updated = new ActivityDto
+        {
+            Id = activity.Id,
+            Name = "Updated Name",
+            PlaceId = activity.PlaceId,
+            Coordinates = activity.Coordinates,
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync(BaseUrl(trip.Id, destination.Id), updated,
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        using var scope = factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var saved = await db.Activities.FindAsync(new object?[] { activity.Id }, TestContext.Current.CancellationToken);
+        Assert.Equal("Updated Name", saved!.Name);
+    }
+
     // DELETE /Api/Trips/{tripId}/Destinations/{destinationId}/Activities/{id}
 
     [Fact]

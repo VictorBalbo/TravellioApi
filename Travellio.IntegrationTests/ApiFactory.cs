@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Testcontainers.PostgreSql;
 using Travellio.Api.Services.PlaceProviders;
 using Travellio.Infrastructure.DbContexts;
@@ -16,6 +17,16 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         .WithUsername("postgres")
         .WithPassword("postgres")
         .Build();
+
+    static ApiFactory()
+    {
+        // Program.cs requires R2 config at startup even though no integration test touches image upload.
+        Environment.SetEnvironmentVariable("R2__AccountId", "test-account");
+        Environment.SetEnvironmentVariable("R2__AccessKeyId", "test-access-key");
+        Environment.SetEnvironmentVariable("R2__SecretAccessKey", "test-secret-key");
+        Environment.SetEnvironmentVariable("R2__BucketName", "test-bucket");
+        Environment.SetEnvironmentVariable("R2__PublicUrl", "https://example.com");
+    }
 
     public async ValueTask InitializeAsync()
     {
@@ -37,12 +48,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
                     .UseNpgsql(_postgres.GetConnectionString())
                     .UseSnakeCaseNamingConvention());
 
-            var placeDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IPlaceProvider));
-            if (placeDescriptor != null)
-            {
-                services.Remove(placeDescriptor);
-            }
-
+            services.RemoveAll<IPlaceProvider>();
             services.AddScoped<IPlaceProvider, FakeWanderlogProvider>();
         });
     }

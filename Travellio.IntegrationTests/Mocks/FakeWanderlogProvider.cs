@@ -6,6 +6,9 @@ namespace Travellio.IntegrationTests.Mocks;
 
 public class FakeWanderlogProvider : IPlaceProvider
 {
+    public string ProviderName { get; } = nameof(FakeWanderlogProvider);
+    public int Priority { get; } = 1;
+
     private static readonly Place FakePlace = new()
     {
         Id = "place-paris",
@@ -20,5 +23,9 @@ public class FakeWanderlogProvider : IPlaceProvider
 
     public Task<IEnumerable<AutoComplete>?> GetAutoCompleteAsync(string text, string sessionToken, double lat,
         double lng, double radius, string language, string locationType, CancellationToken cancellationToken)
+        => Task.FromResult<IEnumerable<AutoComplete>?>(null);
+
+    public Task<IEnumerable<AutoComplete>?> GetAutoCompleteAsync(string text, string sessionToken, double lat,
+        double lng, double radius, string language, CancellationToken cancellationToken)
         => Task.FromResult<IEnumerable<AutoComplete>?>(null);
 }

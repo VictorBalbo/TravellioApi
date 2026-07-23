@@ -56,6 +56,24 @@ public class DestinationTests(ApiFactory factory) : IClassFixture<ApiFactory>, I
         EndDate = new DateOnly(2026, 6, 7),
     };
 
+    private static Activity NewActivity(Guid destinationId) => new()
+    {
+        Id = Guid.CreateVersion7(),
+        DestinationId = destinationId,
+        Name = "Eiffel Tower",
+        PlaceId = "place-eiffel-tower",
+        Coordinates = new Coordinates { Lat = 48.8584m, Lng = 2.2945m },
+    };
+
+    private static Accommodation NewAccommodation(Guid destinationId) => new()
+    {
+        Id = Guid.CreateVersion7(),
+        DestinationId = destinationId,
+        Name = "Hotel de Ville",
+        PlaceId = "place-hotel-paris",
+        Coordinates = new Coordinates { Lat = 48.8566m, Lng = 2.3522m },
+    };
+
     // GET /Api/Trips/{tripId}/Destinations
 
     [Fact]
@@ -291,5 +309,26 @@ public class DestinationTests(ApiFactory factory) : IClassFixture<ApiFactory>, I
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         Assert.Null(await db.Destinations.FindAsync(new object?[] { destination.Id },
             TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task Delete_WhenExists_CascadeDeletesActivitiesAndAccommodations()
+    {
+        // Arrange
+        var trip = NewTrip();
+        var destination = NewDestination(trip.Id);
+        var activity = NewActivity(destination.Id);
+        var accommodation = NewAccommodation(destination.Id);
+        await SeedAsync(trip, destination, activity, accommodation);
+
+        // Act
+        await _client.DeleteAsync($"/Api/Trips/{trip.Id}/Destinations/{destination.Id}",
+            TestContext.Current.CancellationToken);
+
+        // Assert
+        using var scope = factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        Assert.Empty(db.Activities.Where(a => a.DestinationId == destination.Id));
+        Assert.Empty(db.Accommodations.Where(a => a.DestinationId == destination.Id));
     }
 }
