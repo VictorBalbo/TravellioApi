@@ -66,6 +66,11 @@ public class WanderlogProvider(HttpClient httpClient, IConfiguration configurati
                 placeId, metadataResponse.StatusCode, body);
         }
 
+        if (placeDetails == null && placeMetadata == null)
+        {
+            return null;
+        }
+
         return new Place
         {
             Id = placeId,

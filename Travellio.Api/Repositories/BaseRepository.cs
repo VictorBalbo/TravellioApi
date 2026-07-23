@@ -30,7 +30,21 @@ public abstract class BaseRepository<T> : IRepository<T> where T : class, IBaseE
         }
         else
         {
-            Context.Entry(existingEntity).CurrentValues.SetValues(entity);
+            var entry = Context.Entry(existingEntity);
+            entry.CurrentValues.SetValues(entity);
+
+            // CurrentValues.SetValues only copies scalar properties declared directly on the entity;
+            // owned-type navigations (Price, Coordinates, ...) are ignored and must be applied manually.
+            foreach (var reference in entry.References.Where(r => r.Metadata.TargetEntityType.IsOwned()))
+            {
+                var incomingValue = reference.Metadata.PropertyInfo!.GetValue(entity);
+                if (incomingValue is null)
+                    reference.CurrentValue = null;
+                else if (reference.CurrentValue is null)
+                    reference.CurrentValue = incomingValue;
+                else
+                    reference.TargetEntry!.CurrentValues.SetValues(incomingValue);
+            }
         }
 
         await Context.SaveChangesAsync(cancellationToken);

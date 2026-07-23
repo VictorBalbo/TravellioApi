@@ -251,6 +251,70 @@ public class ActivityTests(ApiFactory factory) : IClassFixture<ApiFactory>, IAsy
         Assert.Equal("Updated Name", saved!.Name);
     }
 
+    [Fact]
+    public async Task Post_ExistingActivity_UpdatesPrice()
+    {
+        // Arrange
+        var trip = NewTrip();
+        var destination = NewDestination(trip.Id);
+        var activity = NewActivity(destination.Id);
+        await SeedAsync(trip, destination, activity);
+
+        var updated = new ActivityDto
+        {
+            Id = activity.Id,
+            Name = activity.Name,
+            PlaceId = activity.PlaceId,
+            Coordinates = activity.Coordinates,
+            Price = new PriceDto(25, "BRL"),
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync(BaseUrl(trip.Id, destination.Id), updated,
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        using var scope = factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var saved = await db.Activities.FindAsync(new object?[] { activity.Id }, TestContext.Current.CancellationToken);
+        Assert.NotNull(saved!.Price);
+        Assert.Equal(25, saved.Price!.Value);
+        Assert.Equal("BRL", saved.Price.Currency);
+    }
+
+    [Fact]
+    public async Task Post_ExistingActivity_UpdatesAlreadySetPrice()
+    {
+        // Arrange
+        var trip = NewTrip();
+        var destination = NewDestination(trip.Id);
+        var activity = NewActivity(destination.Id);
+        activity.Price = new Price { Value = 25, Currency = "BRL" };
+        await SeedAsync(trip, destination, activity);
+
+        var updated = new ActivityDto
+        {
+            Id = activity.Id,
+            Name = activity.Name,
+            PlaceId = activity.PlaceId,
+            Coordinates = activity.Coordinates,
+            Price = new PriceDto(99, "USD"),
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync(BaseUrl(trip.Id, destination.Id), updated,
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        using var scope = factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var saved = await db.Activities.FindAsync(new object?[] { activity.Id }, TestContext.Current.CancellationToken);
+        Assert.Equal(99, saved!.Price!.Value);
+        Assert.Equal("USD", saved.Price.Currency);
+    }
+
     // DELETE /Api/Trips/{tripId}/Destinations/{destinationId}/Activities/{id}
 
     [Fact]
