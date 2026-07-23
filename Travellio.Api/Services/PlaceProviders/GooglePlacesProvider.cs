@@ -1,4 +1,3 @@
-using System.Net.Http.Json;
 using System.Text.Json;
 using Travellio.Api.Models.GooglePlaces;
 using Travellio.Domain.DTOs;
@@ -76,12 +75,12 @@ public class GooglePlacesProvider(
         double lng, double radius, string language, string locationType, CancellationToken cancellationToken)
     {
         var apiKey = GetApiKey();
-
+        var locationTypes = locationType.Split(',').Select(l => l.Trim()).ToArray();
         var autoCompleteRequest = new GoogleAutoCompleteRequest
         {
             Input = text,
             SessionToken = sessionToken,
-            IncludedPrimaryTypes = [locationType],
+            IncludedPrimaryTypes = locationTypes,
             LanguageCode = language,
             LocationBias = new GoogleLocationBias
             {
