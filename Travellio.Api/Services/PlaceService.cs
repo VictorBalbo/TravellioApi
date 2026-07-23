@@ -5,27 +5,40 @@ using Travellio.Domain.DTOs;
 namespace Travellio.Api.Services;
 
 public class PlaceService(
-    IPlaceProvider externalProvider,
     ICachedPlaceProvider cachedProvider,
-    IDiagnosticContext diagnosticContext) : IPlaceService
+    IEnumerable<IPlaceProvider> externalProviders,
+    IDiagnosticContext diagnosticContext,
+    ILogger<PlaceService> logger) : IPlaceService
 {
+    private readonly IPlaceProvider[] _providers =
+        new IPlaceProvider[] { cachedProvider }
+            .Concat(externalProviders)
+            .OrderBy(p => p.Priority)
+            .ToArray();
+
     public async Task<Place?> GetPlaceDetails(string placeId, CancellationToken cancellationToken)
     {
-        var place = await cachedProvider.GetPlaceDetailsAsync(placeId, cancellationToken);
-        if (place != null)
+        foreach (var provider in _providers)
         {
-            diagnosticContext.Set("CacheResult", "Hit");
-            return place;
-        }
+            try
+            {
+                var place = await provider.GetPlaceDetailsAsync(placeId, cancellationToken);
+                if (place == null) continue;
 
-        diagnosticContext.Set("CacheResult", "Miss");
+                diagnosticContext.Set("ProviderHit", provider.ProviderName);
+                if (provider.ProviderName != cachedProvider.ProviderName)
+                {
+                    await cachedProvider.SetPlaceDetailsAsync(place, cancellationToken);
+                }
 
-
-        place = await externalProvider.GetPlaceDetailsAsync(placeId, cancellationToken);
-        if (place != null && !string.IsNullOrEmpty(place.Name))
-        {
-            await cachedProvider.SetPlaceDetailsAsync(place, cancellationToken);
-            return place;
+                return place;
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "{Provider} GetPlaceDetails failed for {PlaceId}, falling back to next provider",
+                    provider.ProviderName,
+                    placeId);
+            }
         }
 
         return null;
@@ -34,25 +47,29 @@ public class PlaceService(
     public async Task<IEnumerable<AutoComplete>?> GetAutoComplete(string text, string sessionToken, double lat,
         double lng, double radius, string language, string locationType, CancellationToken cancellationToken)
     {
-        var autoComplete =
-            await cachedProvider.GetAutoCompleteAsync(text, sessionToken, lat, lng, radius, language, locationType,
-                cancellationToken);
-        if (autoComplete != null)
+        foreach (var provider in _providers)
         {
-            diagnosticContext.Set("CacheResult", "Hit");
-            return autoComplete;
-        }
+            try
+            {
+                var autoComplete = await provider.GetAutoCompleteAsync(text, sessionToken, lat, lng, radius,
+                    language, locationType, cancellationToken);
+                if (autoComplete == null) continue;
 
-        diagnosticContext.Set("CacheResult", "Miss");
+                var autoCompleteArray = autoComplete.ToArray();
+                if (provider.ProviderName != cachedProvider.ProviderName)
+                {
+                    await cachedProvider.SetAutoCompleteAsync(autoCompleteArray, text, language, cancellationToken);
+                }
 
-
-        autoComplete = await externalProvider.GetAutoCompleteAsync(text, sessionToken, lat, lng, radius, language,
-            locationType, cancellationToken);
-        var autoCompletes = autoComplete?.ToArray();
-        if (autoCompletes != null && autoCompletes.Length != 0)
-        {
-            await cachedProvider.SetAutoCompleteAsync(autoCompletes, text, language, cancellationToken);
-            return autoCompletes;
+                diagnosticContext.Set("ProviderHit", provider.ProviderName);
+                return autoCompleteArray;
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "{Provider} GetAutoComplete failed for '{Text}', falling back to next provider",
+                    provider.ProviderName,
+                    text);
+            }
         }
 
         return null;

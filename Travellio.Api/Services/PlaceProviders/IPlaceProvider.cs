@@ -4,6 +4,11 @@ namespace Travellio.Api.Services.PlaceProviders;
 
 public interface IPlaceProvider
 {
+    public string ProviderName { get; }
+
+    /// <summary>Lower values are tried first when falling back between providers.</summary>
+    public int Priority { get; }
+
     Task<Place?> GetPlaceDetailsAsync(string placeId, CancellationToken cancellationToken);
 
     Task<IEnumerable<AutoComplete>?> GetAutoCompleteAsync(

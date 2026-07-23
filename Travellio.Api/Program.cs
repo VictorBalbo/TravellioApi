@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using StackExchange.Redis;
 using Travellio.Api.Converters;
 using Travellio.Api.Middleware;
 using Travellio.Api.Queries;
@@ -22,18 +21,6 @@ builder.Services.AddRedisInfrastructure(builder.Configuration);
 builder.Services.AddR2Infrastructure(builder.Configuration);
 
 // Add Dependency Injection
-builder.Services.AddScoped<ICachedPlaceProvider>(sp =>
-{
-    var redis = sp.GetService<IConnectionMultiplexer>();
-    var logger = sp.GetRequiredService<ILogger<CachedProvider>>();
-
-    if (redis is null)
-    {
-        return new NoCacheProvider();
-    }
-
-    return new CachedProvider(redis, logger);
-});
 builder.Services.AddScoped<ITripRepository, TripRepository>();
 builder.Services.AddScoped<ITripQuery, TripQuery>();
 builder.Services.AddScoped<IDestinationRepository, DestinationRepository>();
@@ -46,9 +33,9 @@ builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
 builder.Services.AddScoped<IAccommodationQuery, AccommodationQuery>();
 builder.Services.AddScoped<IAirportRepository, AirportRepository>();
 builder.Services.AddScoped<IPlaceService, PlaceService>();
-builder.Services.AddScoped<WanderlogProvider>();
-builder.Services.AddScoped<GooglePlacesProvider>();
-builder.Services.AddScoped<IPlaceProvider, FallbackPlaceProvider>();
+builder.Services.AddScoped<IPlaceProvider, WanderlogProvider>();
+builder.Services.AddScoped<IPlaceProvider, GooglePlacesProvider>();
+builder.Services.AddScoped<ICachedPlaceProvider, CachedPlaceProvider>();
 builder.Services.AddScoped<ITripService, TripService>();
 builder.Services.AddScoped<IDestinationService, DestinationService>();
 builder.Services.AddScoped<ITransportationService, TransportationService>();

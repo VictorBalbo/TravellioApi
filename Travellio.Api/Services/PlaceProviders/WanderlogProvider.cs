@@ -11,6 +11,9 @@ public class WanderlogProvider(HttpClient httpClient, IConfiguration configurati
     private static readonly JsonSerializerOptions SerializerOptions =
         new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
+    public string ProviderName { get; } = nameof(WanderlogProvider);
+    public int Priority { get; } = 1;
+
     public async Task<Place?> GetPlaceDetailsAsync(string placeId, CancellationToken cancellationToken)
     {
         var placeDetailsUrl = configuration["WanderlogPlaceDetailsUrl"]?.Replace("{placeId}", placeId);
@@ -62,7 +65,6 @@ public class WanderlogProvider(HttpClient httpClient, IConfiguration configurati
             logger.LogWarning("Wanderlog PlaceMetadata request failed for {PlaceId} with status {StatusCode}: {Body}",
                 placeId, metadataResponse.StatusCode, body);
         }
-
 
         return new Place
         {

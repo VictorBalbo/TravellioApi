@@ -8,8 +8,7 @@ namespace Travellio.Api.Services.PlaceProviders;
 public class GooglePlacesProvider(
     HttpClient httpClient,
     IConfiguration configuration,
-    ILogger<GooglePlacesProvider> logger)
-    : IPlaceProvider
+    ILogger<GooglePlacesProvider> logger) : IPlaceProvider
 {
     private const string BaseUrl = "https://places.googleapis.com/v1";
 
@@ -20,7 +19,10 @@ public class GooglePlacesProvider(
     private static readonly JsonSerializerOptions SerializerOptions = new()
         { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
-    private static readonly int GoogleMaxRadius = 50_000;
+    private const int GoogleMaxRadius = 50_000;
+
+    public string ProviderName { get; } = nameof(GooglePlacesProvider);
+    public int Priority { get; } = 2;
 
     public async Task<Place?> GetPlaceDetailsAsync(string placeId, CancellationToken cancellationToken)
     {

@@ -4,9 +4,10 @@ using Travellio.Domain.DTOs;
 
 namespace Travellio.Api.Services.PlaceProviders;
 
-public class CachedProvider(IConnectionMultiplexer redis, ILogger<CachedProvider> logger) : ICachedPlaceProvider
+public class CachedPlaceProvider(ILogger<CachedPlaceProvider> logger, IConnectionMultiplexer? redis = null)
+    : ICachedPlaceProvider
 {
-    private readonly IDatabase _redis = redis.GetDatabase();
+    private readonly IDatabase? _redis = redis?.GetDatabase();
     private readonly TimeSpan _maxWaitTime = TimeSpan.FromSeconds(3);
 
     private const string PlaceKeyPrefix = "place";
@@ -18,8 +19,16 @@ public class CachedProvider(IConnectionMultiplexer redis, ILogger<CachedProvider
     private const int AutoCompleteJitterMaxMins = 60; // 1 hour
 
 
+    public string ProviderName { get; } = nameof(CachedPlaceProvider);
+    public int Priority { get; } = 0;
+
     public async Task<Place?> GetPlaceDetailsAsync(string placeId, CancellationToken cancellationToken)
     {
+        if (_redis is null)
+        {
+            return null;
+        }
+
         try
         {
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -45,6 +54,11 @@ public class CachedProvider(IConnectionMultiplexer redis, ILogger<CachedProvider
 
     public async Task<bool> SetPlaceDetailsAsync(Place place, CancellationToken cancellationToken)
     {
+        if (_redis is null)
+        {
+            return false;
+        }
+
         try
         {
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -81,6 +95,11 @@ public class CachedProvider(IConnectionMultiplexer redis, ILogger<CachedProvider
         string locationType,
         CancellationToken cancellationToken)
     {
+        if (_redis is null)
+        {
+            return null;
+        }
+
         try
         {
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -110,6 +129,11 @@ public class CachedProvider(IConnectionMultiplexer redis, ILogger<CachedProvider
         string language,
         CancellationToken cancellationToken)
     {
+        if (_redis is null)
+        {
+            return false;
+        }
+
         try
         {
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
